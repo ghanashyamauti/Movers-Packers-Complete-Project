@@ -1,0 +1,79 @@
+<%- include('../partials/admin-header') %>
+
+<div class="page-title">
+  <h1><i class="fas fa-info-circle"></i> Booking Details</h1>
+  <a href="/admin/bookings" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back to Bookings</a>
+</div>
+
+<div class="booking-detail-layout">
+  <div class="booking-detail-card">
+    <div class="booking-detail-header">
+      <div>
+        <h3>Booking #<%= booking.booking_number %></h3>
+        <small>Submitted: <%= new Date(booking.created_at).toLocaleString('en-IN') %></small>
+      </div>
+      <span class="status-badge status-<%= booking.status %> badge-lg"><%= booking.status.toUpperCase() %></span>
+    </div>
+    
+    <div class="detail-sections">
+      <div class="detail-section">
+        <h4><i class="fas fa-user"></i> Customer Details</h4>
+        <p><strong>Name:</strong> <%= booking.guest_name %></p>
+        <p><strong>Email:</strong> <%= booking.guest_email %></p>
+        <p><strong>Phone:</strong> <%= booking.guest_phone %></p>
+      </div>
+      <div class="detail-section">
+        <h4><i class="fas fa-concierge-bell"></i> Service Details</h4>
+        <p><strong>Service:</strong> <%= booking.service_name || 'General Moving' %></p>
+        <p><strong>Property Type:</strong> <%= booking.property_type || 'N/A' %></p>
+        <p><strong>Rooms:</strong> <%= booking.num_rooms || 'N/A' %></p>
+        <p><strong>Budget:</strong> <%= booking.estimated_budget || 'N/A' %></p>
+      </div>
+      <div class="detail-section">
+        <h4><i class="fas fa-map-marker-alt"></i> From</h4>
+        <p><%= booking.from_address || '' %></p>
+        <p><strong><%= booking.from_city %></strong>, <%= booking.from_state || '' %></p>
+      </div>
+      <div class="detail-section">
+        <h4><i class="fas fa-location-arrow"></i> To</h4>
+        <p><%= booking.to_address || '' %></p>
+        <p><strong><%= booking.to_city %></strong>, <%= booking.to_state || '' %></p>
+      </div>
+      <div class="detail-section">
+        <h4><i class="fas fa-calendar"></i> Schedule</h4>
+        <p><strong>Date:</strong> <%= new Date(booking.move_date).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) %></p>
+        <p><strong>Time:</strong> <%= booking.move_time || 'N/A' %></p>
+      </div>
+      <% if (booking.special_requirements) { %>
+      <div class="detail-section">
+        <h4><i class="fas fa-sticky-note"></i> Special Requirements</h4>
+        <p><%= booking.special_requirements %></p>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- UPDATE STATUS -->
+  <div class="admin-action-card">
+    <h3><i class="fas fa-tasks"></i> Update Status</h3>
+    <form action="/admin/bookings/<%= booking.id %>/status" method="POST">
+      <div class="form-group">
+        <label>Booking Status</label>
+        <select name="status" class="form-control">
+          <option value="pending" <%= booking.status==='pending' ? 'selected' : '' %>>Pending</option>
+          <option value="approved" <%= booking.status==='approved' ? 'selected' : '' %>>Approved</option>
+          <option value="rejected" <%= booking.status==='rejected' ? 'selected' : '' %>>Rejected</option>
+          <option value="completed" <%= booking.status==='completed' ? 'selected' : '' %>>Completed</option>
+          <option value="cancelled" <%= booking.status==='cancelled' ? 'selected' : '' %>>Cancelled</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Admin Notes (visible to customer)</label>
+        <textarea name="admin_notes" rows="4" class="form-control" placeholder="e.g. Our team will contact you to confirm timing..."><%= booking.admin_notes || '' %></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Update Status</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/admin-footer') %>

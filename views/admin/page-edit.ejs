@@ -1,0 +1,25 @@
+<%- include('../partials/admin-header') %>
+<div class="page-title"><h1><i class="fas fa-edit"></i> Edit Page: <%= page.title %></h1><a href="/admin/pages" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a></div>
+<div class="admin-form-card">
+  <form action="/admin/pages/edit/<%= page.page_key %>" method="POST">
+    <div class="form-group"><label>Page Title</label><input type="text" name="title" class="form-control" value="<%= page.title || '' %>"></div>
+    <div class="form-group">
+      <label>Content</label>
+      <% if (page.page_key === 'contact_info') { %>
+        <p class="form-hint">This page uses JSON format. Edit carefully:</p>
+      <% } %>
+      <textarea name="content" rows="15" class="form-control" style="font-family:monospace"><%= page.content || '' %></textarea>
+      <% if (page.page_key === 'about_us') { %>
+        <small>You can use HTML tags for formatting. Use &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt; etc.</small>
+      <% } else { %>
+        <small>JSON format: {"address":"...","phone1":"...","phone2":"...","email":"...","business_hours":"...","map_embed":"&lt;iframe...&gt;"}</small>
+      <% } %>
+    </div>
+    <div class="form-group"><label>Meta Description (for SEO)</label><input type="text" name="meta_description" class="form-control" value="<%= page.meta_description || '' %>"></div>
+    <div class="form-actions">
+      <a href="/admin/pages" class="btn btn-outline">Cancel</a>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Page</button>
+    </div>
+  </form>
+</div>
+<%- include('../partials/admin-footer') %>

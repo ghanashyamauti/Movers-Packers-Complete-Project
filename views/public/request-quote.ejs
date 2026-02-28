@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Request Quote - Kalyani Packers & Movers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .booking-page { padding: 60px 0; background: #f0f4f8; min-height: 80vh; }
+    .booking-wrapper { display: grid; grid-template-columns: 1fr 360px; gap: 28px; align-items: flex-start; }
+    .booking-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px; margin-bottom: 20px; }
+    .booking-card h2 { color: #1e3a5f; font-size: 1.3rem; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .booking-card h2 i { color: #f6921e; }
+    .booking-card p.sub { color: #718096; font-size: 0.875rem; margin-bottom: 24px; }
+
+    /* Booking type tabs */
+    .booking-tabs { display: flex; gap: 0; margin-bottom: 28px; background: #f0f4f8; border-radius: 12px; padding: 5px; }
+    .booking-tab { flex: 1; padding: 12px 16px; border-radius: 8px; border: none; background: transparent; font-weight: 700; font-size: 0.9rem; cursor: pointer; color: #718096; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .booking-tab.active { background: #1e3a5f; color: #fff; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* Form fields */
+    .fg { margin-bottom: 16px; }
+    .fg label { display: block; font-weight: 600; font-size: 0.85rem; color: #2d3748; margin-bottom: 6px; }
+    .fg label span.req { color: #e74c3c; }
+    .fg input, .fg select, .fg textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; color: #2d3748; font-family: inherit; transition: all 0.2s; }
+    .fg input:focus, .fg select:focus, .fg textarea:focus { outline: none; border-color: #f6921e; box-shadow: 0 0 0 3px rgba(246,146,30,0.12); }
+    .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* Vehicle cards */
+    .vehicles-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
+    .v-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+    .v-card:hover { border-color: #1e3a5f; }
+    .v-card.selected { border-color: #f6921e; background: #fffbf5; }
+    .v-card-icon { font-size: 1.8rem; color: #1e3a5f; margin-bottom: 6px; }
+    .v-card img { width: 55px; height: 40px; object-fit: contain; margin-bottom: 6px; }
+    .v-card-name { font-weight: 700; font-size: 0.82rem; color: #1e3a5f; margin-bottom: 2px; }
+    .v-card-cap { font-size: 0.72rem; color: #718096; }
+
+    /* Items selector */
+    .cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .cat-tab { padding: 5px 12px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: #fff; color: #718096; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+    .cat-tab.active { background: #1e3a5f; color: #fff; border-color: #1e3a5f; }
+    .cat-sec { display: none; }
+    .cat-sec.active { display: block; }
+    .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .item-card { border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 9px 11px; display: flex; align-items: center; justify-content: space-between; }
+    .item-card.selected { border-color: #f6921e; background: #fffbf5; }
+    .item-name { font-weight: 600; font-size: 0.8rem; color: #2d3748; }
+    .item-wt { font-size: 0.72rem; color: #718096; }
+    .qty-ctrl { display: flex; align-items: center; gap: 4px; }
+    .qty-btn { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; color: #1e3a5f; font-weight: 700; }
+    .qty-btn:hover { background: #f6921e; color: #fff; border-color: #f6921e; }
+    .qty-num { font-weight: 700; color: #1e3a5f; min-width: 14px; text-align: center; font-size: 0.82rem; }
+
+    /* Labour selector */
+    .labour-selector { display: flex; align-items: center; gap: 16px; background: #f0f4f8; padding: 16px 20px; border-radius: 10px; margin-bottom: 20px; }
+    .labour-selector span { font-weight: 600; color: #1e3a5f; flex: 1; font-size: 0.9rem; }
+    .labour-selector small { color: #718096; font-size: 0.78rem; display: block; }
+    .labour-ctrl { display: flex; align-items: center; gap: 10px; }
+    .labour-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #1e3a5f; background: #fff; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; color: #1e3a5f; font-weight: 700; }
+    .labour-btn:hover { background: #f6921e; color: #fff; border-color: #f6921e; }
+    .labour-count { font-size: 1.2rem; font-weight: 800; color: #1e3a5f; min-width: 24px; text-align: center; }
+
+    /* Estimate panel */
+    .estimate-panel { position: sticky; top: 80px; }
+    .est-card { background: #1e3a5f; border-radius: 16px; padding: 24px; color: #fff; margin-bottom: 16px; }
+    .est-card h3 { color: #fff; font-size: 1rem; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+    .est-card h3 i { color: #f6921e; }
+    .est-empty { text-align: center; padding: 20px 0; color: rgba(255,255,255,0.4); font-size: 0.875rem; }
+    .est-empty i { font-size: 2rem; display: block; margin-bottom: 8px; opacity: 0.2; }
+    .r-sec { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+    .r-sec-title { font-size: 0.72rem; font-weight: 700; color: #f6921e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .r-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 6px; color: rgba(255,255,255,0.8); }
+    .r-row:last-child { margin: 0; }
+    .r-total { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; color: #f6921e; background: rgba(246,146,30,0.15); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+    .disclaimer { font-size: 0.75rem; color: rgba(255,255,255,0.5); text-align: center; line-height: 1.5; margin-bottom: 14px; }
+    .btn-submit { width: 100%; padding: 13px; border-radius: 10px; background: #f6921e; color: #fff; font-weight: 700; font-size: 0.95rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-submit:hover { background: #ffa840; }
+
+    @media(max-width:900px) { .booking-wrapper { grid-template-columns: 1fr; } .estimate-panel { position: static; } .vehicles-grid { grid-template-columns: repeat(2,1fr); } .items-grid { grid-template-columns: 1fr; } .form-row2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <div class="booking-page">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:30px;">
+        <span class="section-badge">Book Now</span>
+        <h2 style="color:#1e3a5f;margin:8px 0 6px;">Request a Quote</h2>
+        <p style="color:#718096;">Fill in your details and get an instant estimate</p>
+      </div>
+
+      <div class="booking-wrapper">
+        <!-- LEFT FORM -->
+        <div>
+          <!-- Booking type tabs -->
+          <div class="booking-tabs">
+            <button class="booking-tab active" onclick="switchBookingTab('vehicle', this)">
+              <i class="fas fa-truck"></i> Book Vehicle
+            </button>
+            <button class="booking-tab" onclick="switchBookingTab('material', this)">
+              <i class="fas fa-boxes"></i> Book with Materials
+            </button>
+          </div>
+
+          <!-- Personal Details (shared) -->
+          <div class="booking-card">
+            <h2><i class="fas fa-user"></i> Your Details</h2>
+            <p class="sub">We'll use this to contact you with your quote</p>
+            <div class="form-row2">
+              <div class="fg"><label>Full Name <span class="req">*</span></label><input type="text" id="b-name" placeholder="e.g. Sakshi Darekar" required></div>
+              <div class="fg"><label>Phone Number <span class="req">*</span></label><input type="tel" id="b-phone" placeholder="+91 99999 99999" required></div>
+            </div>
+            <div class="fg"><label>Email Address</label><input type="email" id="b-email" placeholder="sakshi@email.com"></div>
+            <div class="form-row2">
+              <div class="fg"><label>From Address <span class="req">*</span></label><input type="text" id="b-from" placeholder="Pickup location" required></div>
+              <div class="fg"><label>To Address <span class="req">*</span></label><input type="text" id="b-to" placeholder="Drop location" required></div>
+            </div>
+            <div class="form-row2">
+              <div class="fg"><label>Distance (KM) <span class="req">*</span></label><input type="number" id="b-distance" placeholder="e.g. 10" min="1" oninput="onDistanceChange()"></div>
+              <div class="fg"><label>Move Date <span class="req">*</span></label><input type="date" id="b-date" min="<%= new Date().toISOString().split('T')[0] %>"></div>
+            </div>
+          </div>
+
+          <!-- VEHICLE TAB -->
+          <div id="tab-vehicle" class="tab-pane active">
+            <div class="booking-card">
+              <h2><i class="fas fa-truck"></i> Select Vehicle</h2>
+              <p class="sub">Choose vehicle based on your load — price updates instantly</p>
+              <div class="vehicles-grid">
+                <% vehicles.forEach(v => { %>
+                <div class="v-card" id="vc-<%= v.id %>" onclick="selectVehicle(<%= v.id %>)">
+                  <% if(v.image) { %>
+                    <img src="/images/vehicles/<%= v.image %>" alt="<%= v.name %>">
+                  <% } else { %>
+                    <div class="v-card-icon">
+                      <% if(v.name.includes('2-Wheeler')) { %><i class="fas fa-motorcycle"></i>
+                      <% } else if(v.name.includes('3-Wheeler')) { %><i class="fas fa-truck-pickup"></i>
+                      <% } else if(v.name.includes('Tata')) { %><i class="fas fa-shuttle-van"></i>
+                      <% } else if(v.name.includes('Pickup')) { %><i class="fas fa-truck-pickup"></i>
+                      <% } else { %><i class="fas fa-truck"></i><% } %>
+                    </div>
+                  <% } %>
+                  <div class="v-card-name"><%= v.name %></div>
+                  <div class="v-card-cap">Up to <%= v.capacity_kg %>kg</div>
+                </div>
+                <% }) %>
+              </div>
+
+              <!-- Labour selector -->
+              <div class="labour-selector">
+                <div>
+                  <span>Add Labourers</span>
+                  <small>₹400 per person • helps with loading/unloading</small>
+                </div>
+                <div class="labour-ctrl">
+                  <button class="labour-btn" onclick="changeLabour(-1)">−</button>
+                  <span class="labour-count" id="labour-count-v">0</span>
+                  <button class="labour-btn" onclick="changeLabour(1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MATERIAL TAB -->
+          <div id="tab-material" class="tab-pane">
+            <div class="booking-card">
+              <h2><i class="fas fa-boxes"></i> Select Items</h2>
+              <p class="sub">Add your items — estimate updates as you select</p>
+              <div class="cat-tabs">
+                <% categories.forEach((cat, i) => { %>
+                <button class="cat-tab <%= i===0?'active':'' %>" onclick="showCat(<%= cat.id %>, this)">
+                  <i class="fas <%= cat.icon %>"></i> <%= cat.name %>
+                </button>
+                <% }) %>
+              </div>
+              <% categories.forEach((cat, i) => { %>
+              <div class="cat-sec <%= i===0?'active':'' %>" id="mcat-<%= cat.id %>">
+                <div class="items-grid">
+                  <% items.filter(it => it.category_id == cat.id).forEach(item => { %>
+                  <div class="item-card" id="mcard-<%= item.id %>">
+                    <div>
+                      <div class="item-name"><%= item.name %></div>
+                      <div class="item-wt"><i class="fas fa-weight-hanging" style="color:#f6921e;font-size:0.65rem;"></i> <%= item.weight_kg %>kg</div>
+                    </div>
+                    <div class="qty-ctrl">
+                      <button class="qty-btn" onclick="changeQty(<%= item.id %>, -1, '<%= item.name %>', <%= item.weight_kg %>)">−</button>
+                      <span class="qty-num" id="mqty-<%= item.id %>">0</span>
+                      <button class="qty-btn" onclick="changeQty(<%= item.id %>, 1, '<%= item.name %>', <%= item.weight_kg %>)">+</button>
+                    </div>
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+              <% }) %>
+
+              <!-- Labour for material -->
+              <div class="labour-selector" style="margin-top:16px;">
+                <div>
+                  <span>Add Extra Labourers</span>
+                  <small>₹400 per person • minimum 2 included automatically</small>
+                </div>
+                <div class="labour-ctrl">
+                  <button class="labour-btn" onclick="changeLabourM(-1)">−</button>
+                  <span class="labour-count" id="labour-count-m">0</span>
+                  <button class="labour-btn" onclick="changeLabourM(1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="booking-card">
+            <h2><i class="fas fa-sticky-note"></i> Additional Notes</h2>
+            <div class="fg" style="margin:0;">
+              <textarea id="b-notes" rows="3" placeholder="Any special requirements, fragile items, floor details..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Estimate Panel -->
+        <div class="estimate-panel">
+          <div class="est-card">
+            <h3><i class="fas fa-calculator"></i> Live Estimate</h3>
+            <div id="est-empty" class="est-empty">
+              <i class="fas fa-truck"></i>
+              Select vehicle or items to see live estimate
+            </div>
+            <div id="est-result" style="display:none;">
+              <div class="r-sec" id="est-vehicle-sec" style="display:none;">
+                <div class="r-sec-title"><i class="fas fa-truck"></i> Vehicle</div>
+                <div class="r-row"><span>Vehicle</span><span id="er-vname">-</span></div>
+                <div class="r-row"><span>Distance</span><span id="er-dist">-</span></div>
+                <div class="r-row" style="font-weight:700;color:#fff;"><span>Vehicle Cost</span><span id="er-vcost">₹0</span></div>
+              </div>
+              <div class="r-sec" id="est-material-sec" style="display:none;">
+                <div class="r-sec-title"><i class="fas fa-boxes"></i> Materials</div>
+                <div id="er-itemlist"></div>
+                <div class="r-row"><span>Base Cost</span><span id="er-mbase">₹0</span></div>
+                <div class="r-row"><span>Distance Charge</span><span id="er-mdist">₹0</span></div>
+                <div class="r-row"><span>Packing (10%)</span><span id="er-mpack">₹0</span></div>
+                <div class="r-row" style="font-weight:700;color:#fff;"><span>Material Cost</span><span id="er-mtotal">₹0</span></div>
+              </div>
+              <div class="r-sec">
+                <div class="r-sec-title"><i class="fas fa-hard-hat"></i> Labour</div>
+                <div class="r-row"><span>Labourers</span><span id="er-lcount">0</span></div>
+                <div class="r-row" style="font-weight:700;color:#fff;"><span>Labour Cost</span><span id="er-lcost">₹0</span></div>
+              </div>
+              <div class="r-total">
+                <span>Total Estimate</span>
+                <span id="er-total">₹0</span>
+              </div>
+              <div class="disclaimer"><i class="fas fa-info-circle"></i> Estimate only. Final price confirmed by our team.</div>
+            </div>
+          </div>
+
+          <!-- Submit button -->
+          <button class="btn-submit" onclick="submitBooking()">
+            <i class="fas fa-paper-plane"></i> Submit Booking Request
+          </button>
+          <p style="text-align:center;font-size:0.78rem;color:#718096;margin-top:10px;">
+            Our team will call you within 30 minutes to confirm
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    const vehicles = <%- JSON.stringify(vehicles) %>;
+    const settings = <%- JSON.stringify(settings) %>;
+    let currentTab = 'vehicle';
+    let selectedVehicleId = null;
+    let labourCountV = 0;
+    let labourCountM = 0;
+    let selectedItems = {};
+
+    // ===== TAB SWITCH =====
+    function switchBookingTab(tab, btn) {
+      document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.booking-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      btn.classList.add('active');
+      currentTab = tab;
+      updateEstimate();
+    }
+
+    // ===== PORTER FORMULA =====
+    function porterPrice(km) {
+      if (km <= 4) return 300;
+      if (km <= 10) return 300 + (km - 4) * 63;
+      return 300 + (6 * 63) + (km - 10) * 113;
+    }
+
+    function vehicleMultiplier(capacity) {
+      if (capacity <= 30) return 1;
+      if (capacity <= 500) return 1.8;
+      if (capacity <= 750) return 2.5;
+      if (capacity <= 1200) return 3.5;
+      return 5;
+    }
+
+    // ===== VEHICLE SELECTION =====
+    function selectVehicle(id) {
+      selectedVehicleId = id;
+      document.querySelectorAll('.v-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('vc-' + id).classList.add('selected');
+      updateEstimate();
+    }
+
+    function onDistanceChange() { updateEstimate(); }
+
+    // ===== LABOUR =====
+    function changeLabour(delta) {
+      labourCountV = Math.max(0, labourCountV + delta);
+      document.getElementById('labour-count-v').textContent = labourCountV;
+      updateEstimate();
+    }
+    function changeLabourM(delta) {
+      labourCountM = Math.max(0, labourCountM + delta);
+      document.getElementById('labour-count-m').textContent = labourCountM;
+      updateEstimate();
+    }
+
+    // ===== ITEMS =====
+    function showCat(catId, btn) {
+      document.querySelectorAll('.cat-sec').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('mcat-' + catId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function changeQty(id, delta, name, weight) {
+      const current = selectedItems[id] ? selectedItems[id].qty : 0;
+      const newQty = Math.max(0, current + delta);
+      if (newQty === 0) {
+        delete selectedItems[id];
+        document.getElementById('mcard-' + id).classList.remove('selected');
+      } else {
+        selectedItems[id] = { id, qty: newQty, name, weight };
+        document.getElementById('mcard-' + id).classList.add('selected');
+      }
+      document.getElementById('mqty-' + id).textContent = newQty;
+      updateEstimate();
+    }
+
+    // ===== MAIN ESTIMATE UPDATE =====
+    function updateEstimate() {
+      const distance = parseFloat(document.getElementById('b-distance').value) || 0;
+      const empty = document.getElementById('est-empty');
+      const result = document.getElementById('est-result');
+      const vSec = document.getElementById('est-vehicle-sec');
+      const mSec = document.getElementById('est-material-sec');
+
+      let vehicleCost = 0;
+      let materialCost = 0;
+      let labourCost = 0;
+      let hasContent = false;
+
+      // VEHICLE TAB
+      if (currentTab === 'vehicle') {
+        vSec.style.display = 'none';
+        mSec.style.display = 'none';
+        if (selectedVehicleId && distance > 0) {
+          const v = vehicles.find(v => v.id == selectedVehicleId);
+          const base = porterPrice(distance);
+          const mult = vehicleMultiplier(v.capacity_kg);
+          vehicleCost = Math.round(base * mult);
+          labourCost = labourCountV * 400;
+
+          vSec.style.display = 'block';
+          document.getElementById('er-vname').textContent = v.name;
+          document.getElementById('er-dist').textContent = distance + ' km';
+          document.getElementById('er-vcost').textContent = '₹' + fmt(vehicleCost);
+          hasContent = true;
+        }
+        document.getElementById('er-lcount').textContent = labourCountV + ' persons';
+        document.getElementById('er-lcost').textContent = '₹' + fmt(labourCost);
+      }
+
+      // MATERIAL TAB
+      if (currentTab === 'material') {
+        vSec.style.display = 'none';
+        mSec.style.display = 'none';
+        const keys = Object.keys(selectedItems);
+        if (keys.length > 0) {
+          let totalWeight = 0;
+          let itemHtml = '';
+          keys.forEach(k => {
+            const it = selectedItems[k];
+            const w = it.weight * it.qty;
+            totalWeight += w;
+            itemHtml += `<div class="r-row"><span>${it.name} ×${it.qty}</span><span>${w}kg</span></div>`;
+          });
+
+          const baseRate = settings.material_base_rate || 8;
+          const packPct = settings.packing_charge_percent || 10;
+          const basePrice = totalWeight * baseRate;
+          const distCharge = distance > 0 ? distance * (settings.material_per_km_rate || 2) * (totalWeight / 100) : 0;
+          const packCharge = basePrice * (packPct / 100);
+          materialCost = Math.round(basePrice + distCharge + packCharge);
+
+          // Auto labour: min 2 + 1 per 150kg extra
+          const autoLabour = settings.base_labour_count || 2;
+          const extraAuto = Math.floor(totalWeight / (settings.weight_per_extra_labour || 150));
+          const totalLabour = autoLabour + extraAuto + labourCountM;
+          labourCost = totalLabour * 400;
+
+          mSec.style.display = 'block';
+          document.getElementById('er-itemlist').innerHTML = itemHtml;
+          document.getElementById('er-mbase').textContent = '₹' + fmt(basePrice);
+          document.getElementById('er-mdist').textContent = '₹' + fmt(distCharge);
+          document.getElementById('er-mpack').textContent = '₹' + fmt(packCharge);
+          document.getElementById('er-mtotal').textContent = '₹' + fmt(materialCost);
+          document.getElementById('er-lcount').textContent = totalLabour + ' persons';
+          document.getElementById('er-lcost').textContent = '₹' + fmt(labourCost);
+          hasContent = true;
+        } else {
+          const baseLabour = (settings.base_labour_count || 2) + labourCountM;
+          labourCost = baseLabour * 400;
+          document.getElementById('er-lcount').textContent = baseLabour + ' persons';
+          document.getElementById('er-lcost').textContent = '₹' + fmt(labourCost);
+        }
+      }
+
+      const total = vehicleCost + materialCost + labourCost;
+
+      if (hasContent || labourCost > 0) {
+        empty.style.display = 'none';
+        result.style.display = 'block';
+        document.getElementById('er-total').textContent = '₹' + fmt(total);
+      } else {
+        empty.style.display = 'block';
+        result.style.display = 'none';
+      }
+    }
+
+    // ===== SUBMIT =====
+    function submitBooking() {
+      const name = document.getElementById('b-name').value.trim();
+      const phone = document.getElementById('b-phone').value.trim();
+      const from = document.getElementById('b-from').value.trim();
+      const to = document.getElementById('b-to').value.trim();
+      const distance = document.getElementById('b-distance').value;
+      const date = document.getElementById('b-date').value;
+
+      if (!name || !phone || !from || !to || !distance || !date) {
+        alert('Please fill all required fields marked with *');
+        return;
+      }
+
+      // Build form and submit
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/request-quote';
+
+      const fields = {
+        name, phone,
+        email: document.getElementById('b-email').value,
+        from_address: from,
+        to_address: to,
+        distance_km: distance,
+        move_date: date,
+        booking_type: currentTab,
+        vehicle_id: selectedVehicleId || '',
+        labour_count: currentTab === 'vehicle' ? labourCountV : labourCountM,
+        items: JSON.stringify(Object.values(selectedItems)),
+        notes: document.getElementById('b-notes').value,
+        estimated_price: document.getElementById('er-total') ? document.getElementById('er-total').textContent : ''
+      };
+
+      Object.entries(fields).forEach(([k,v]) => {
+        const inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = k; inp.value = v;
+        form.appendChild(inp);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+    function fmt(n) { return Math.round(n).toLocaleString('en-IN'); }
+  </script>
+</body>
+</html>

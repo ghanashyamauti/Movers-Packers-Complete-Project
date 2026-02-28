@@ -1,0 +1,79 @@
+<%- include('../partials/header') %>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Booking Details</h1>
+    <nav class="breadcrumb-nav"><a href="/">Home</a> <i class="fas fa-chevron-right"></i> <a href="/user/my-requests">My Requests</a> <i class="fas fa-chevron-right"></i> Details</nav>
+  </div>
+</section>
+
+<section class="section user-dashboard">
+  <div class="container">
+    <div class="user-layout">
+      <aside class="user-sidebar">
+        <div class="user-sidebar-profile">
+          <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+          <h4><%= currentUser.name %></h4>
+        </div>
+        <nav class="user-nav">
+          <a href="/user/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <a href="/request-quote"><i class="fas fa-plus-circle"></i> New Booking</a>
+          <a href="/user/my-requests" class="active"><i class="fas fa-list-alt"></i> My Requests</a>
+          <a href="/user/my-account"><i class="fas fa-user"></i> My Account</a>
+          <a href="/user/change-password"><i class="fas fa-key"></i> Change Password</a>
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+      </aside>
+      <div class="user-content">
+        <a href="/user/my-requests" class="btn btn-outline btn-sm mb-3"><i class="fas fa-arrow-left"></i> Back to Requests</a>
+        <div class="booking-detail-card">
+          <div class="booking-detail-header">
+            <div>
+              <h3>Booking #<%= booking.booking_number %></h3>
+              <small>Submitted on <%= new Date(booking.created_at).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) %></small>
+            </div>
+            <span class="status-badge status-<%= booking.status %> badge-lg"><%= booking.status.toUpperCase() %></span>
+          </div>
+          
+          <div class="detail-sections">
+            <div class="detail-section">
+              <h4><i class="fas fa-map-marker-alt"></i> Moving From</h4>
+              <p><strong>Address:</strong> <%= booking.from_address || 'N/A' %></p>
+              <p><strong>City:</strong> <%= booking.from_city %></p>
+              <p><strong>State:</strong> <%= booking.from_state || 'N/A' %></p>
+            </div>
+            <div class="detail-section">
+              <h4><i class="fas fa-location-arrow"></i> Moving To</h4>
+              <p><strong>Address:</strong> <%= booking.to_address || 'N/A' %></p>
+              <p><strong>City:</strong> <%= booking.to_city %></p>
+              <p><strong>State:</strong> <%= booking.to_state || 'N/A' %></p>
+            </div>
+            <div class="detail-section">
+              <h4><i class="fas fa-calendar-alt"></i> Move Details</h4>
+              <p><strong>Service:</strong> <%= booking.service_name || 'General' %></p>
+              <p><strong>Move Date:</strong> <%= new Date(booking.move_date).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) %></p>
+              <p><strong>Preferred Time:</strong> <%= booking.move_time || 'N/A' %></p>
+              <p><strong>Property Type:</strong> <%= booking.property_type || 'N/A' %></p>
+              <p><strong>No. of Rooms:</strong> <%= booking.num_rooms || 'N/A' %></p>
+              <p><strong>Budget:</strong> <%= booking.estimated_budget || 'N/A' %></p>
+            </div>
+            <% if (booking.special_requirements) { %>
+            <div class="detail-section">
+              <h4><i class="fas fa-sticky-note"></i> Special Requirements</h4>
+              <p><%= booking.special_requirements %></p>
+            </div>
+            <% } %>
+            <% if (booking.admin_notes) { %>
+            <div class="detail-section admin-notes">
+              <h4><i class="fas fa-comment-dots"></i> Admin Notes</h4>
+              <p><%= booking.admin_notes %></p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

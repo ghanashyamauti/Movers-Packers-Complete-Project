@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <a href="/" class="navbar-brand">
+      <!-- LOGO PLACEHOLDER: Replace with your logo image -->
+      <!-- <img src="/images/logo.png" alt="SwiftMove Logo" class="logo-img"> -->
+      <span class="logo-icon"><i class="fas fa-truck-moving"></i></span>
+      <span class="logo-text">Kalyani<span>Packers & Movers</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">Home</a></li>
+      <li><a href="/services" class="<%= currentPath === '/services' ? 'active' : '' %>">Services</a></li>
+      <li><a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>">About</a></li>
+      <li><a href="/contact" class="<%= currentPath === '/contact' ? 'active' : '' %>">Contact</a></li>
+      <li><a href="/request-quote" class="btn-quote">Get Quote</a></li>
+      <% if (currentUser) { %>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle"><i class="fas fa-user-circle"></i> <%= currentUser.name.split(' ')[0] %></a>
+          <ul class="dropdown-menu">
+            <li><a href="/user/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/user/my-requests"><i class="fas fa-list-alt"></i> My Requests</a></li>
+            <li><a href="/user/my-account"><i class="fas fa-user"></i> My Account</a></li>
+            <li><a href="/user/change-password"><i class="fas fa-key"></i> Change Password</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </ul>
+        </li>
+      <% } else { %>
+        <li><a href="/login" class="btn-login">Login</a></li>
+      <% } %>
+    </ul>
+  </div>
+</nav>
+
+<!-- FLASH MESSAGES -->
+<% if (success_msg && success_msg.length > 0) { %>
+  <div class="flash flash-success">
+    <i class="fas fa-check-circle"></i> <%= success_msg %>
+    <button class="flash-close">&times;</button>
+  </div>
+<% } %>
+<% if (error_msg && error_msg.length > 0) { %>
+  <div class="flash flash-error">
+    <i class="fas fa-exclamation-circle"></i> <%= error_msg %>
+    <button class="flash-close">&times;</button>
+  </div>
+<% } %>

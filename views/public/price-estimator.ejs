@@ -1,0 +1,289 @@
+<%- include('../partials/header') %>
+
+<section class="page-banner">
+  <div class="container">
+    <h1><i class="fas fa-calculator"></i> Price Estimator</h1>
+    <nav class="breadcrumb-nav">
+      <a href="/">Home</a> <i class="fas fa-chevron-right"></i> Price Estimator
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="estimator-layout">
+
+      <div class="estimator-main">
+        <div class="estimator-card">
+          <h3><i class="fas fa-route"></i> Step 1 — Enter Distance</h3>
+          <div class="distance-input-row">
+            <div class="form-group">
+              <label>Moving From (City)</label>
+              <input type="text" id="fromCity" class="form-control" placeholder="e.g. Pune">
+            </div>
+            <div class="arrow-icon"><i class="fas fa-arrow-right"></i></div>
+            <div class="form-group">
+              <label>Moving To (City)</label>
+              <input type="text" id="toCity" class="form-control" placeholder="e.g. Mumbai">
+            </div>
+            <div class="form-group">
+              <label>Approx Distance (KM)</label>
+              <input type="number" id="distanceKm" class="form-control" placeholder="e.g. 150" min="1" oninput="calculateEstimate()">
+            </div>
+          </div>
+          <div class="slab-info" id="slabInfo" style="display:none">
+            <i class="fas fa-info-circle"></i>
+            <span id="slabLabel"></span>
+          </div>
+        </div>
+
+        <div class="estimator-card">
+          <h3><i class="fas fa-boxes"></i> Step 2 — Select Your Items</h3>
+          <p class="estimator-hint">Select all items you want to move. Quantity can be adjusted.</p>
+
+          <% var categoryOrder = ['Furniture','Appliances','Electronics','Kitchen','Boxes & Misc']; %>
+          <% var categoryIcons = { 'Furniture':'fas fa-couch', 'Appliances':'fas fa-blender', 'Electronics':'fas fa-tv', 'Kitchen':'fas fa-utensils', 'Boxes & Misc':'fas fa-box' }; %>
+
+          <% categoryOrder.forEach(function(cat) { %>
+            <% if (itemsByCategory[cat]) { %>
+            <div class="item-category">
+              <div class="category-header" onclick="toggleCategory(this)">
+                <span><i class="<%= categoryIcons[cat] || 'fas fa-box' %>"></i> <%= cat %></span>
+                <i class="fas fa-chevron-down cat-arrow"></i>
+              </div>
+              <div class="category-items">
+                <% itemsByCategory[cat].forEach(function(item) { %>
+                <div class="item-row">
+                  <label class="item-checkbox-label">
+                    <input type="checkbox"
+                      class="item-checkbox"
+                      data-id="<%= item.id %>"
+                      data-name="<%= item.name %>"
+                      data-weight="<%= parseFloat(item.weight_kg) %>"
+                      data-price="<%= parseFloat(item.base_price) %>"
+                      onchange="toggleItem(this)">
+                    <span class="item-name"><%= item.name %></span>
+                    <span class="item-weight"><%= item.weight_kg %> kg</span>
+                  </label>
+                  <div class="item-qty" id="qty-<%= item.id %>" style="display:none">
+                    <button type="button" onclick="changeQty('<%= item.id %>',-1)">-</button>
+                    <span id="qty-val-<%= item.id %>">1</span>
+                    <button type="button" onclick="changeQty('<%= item.id %>',1)">+</button>
+                  </div>
+                  <span class="item-subtotal" id="subtotal-<%= item.id %>"></span>
+                </div>
+                <% }); %>
+              </div>
+            </div>
+            <% } %>
+          <% }); %>
+        </div>
+      </div>
+
+      <div class="estimator-sidebar">
+        <div class="price-summary-card">
+          <div class="price-summary-header">
+            <h3><i class="fas fa-receipt"></i> Price Estimate</h3>
+          </div>
+          <div class="price-empty" id="priceEmpty">
+            <i class="fas fa-calculator"></i>
+            <p>Enter distance and select items to see estimate</p>
+          </div>
+          <div class="price-breakdown" id="priceBreakdown" style="display:none">
+            <div class="breakdown-section">
+              <h4>Selected Items</h4>
+              <div id="itemsList"></div>
+            </div>
+            <div class="breakdown-row total-weight">
+              <span>Total Weight</span>
+              <strong id="totalWeight">0 kg</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Base Charge (<span id="slabLabelSmall"></span>)</span>
+              <strong id="baseCharge">Rs.0</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Weight Charge</span>
+              <strong id="weightCharge">Rs.0</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Items Handling</span>
+              <strong id="itemsCharge">Rs.0</strong>
+            </div>
+            <div class="breakdown-row grand-total">
+              <span>Estimated Total</span>
+              <strong id="grandTotal">Rs.0</strong>
+            </div>
+            <div class="disclaimer">
+              <i class="fas fa-info-circle"></i>
+              Approximate estimate. Final price confirmed by our team.
+            </div>
+          </div>
+          <div class="summary-actions" id="summaryActions" style="display:none">
+            <a href="/request-quote" class="btn btn-primary btn-block" id="bookNowBtn">
+              <i class="fas fa-clipboard-list"></i> Book Now
+            </a>
+            <button type="button" onclick="resetEstimate()" class="btn btn-outline btn-block">
+              <i class="fas fa-redo"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="slabs-reference-card">
+          <h4><i class="fas fa-map-marked-alt"></i> Distance Pricing Slabs</h4>
+          <table class="slabs-table">
+            <thead><tr><th>Distance</th><th>Base</th><th>Per KG</th></tr></thead>
+            <tbody>
+              <% slabs.forEach(function(s) { %>
+              <tr>
+                <td><%= s.label %></td>
+                <td>Rs.<%= s.base_charge %></td>
+                <td>Rs.<%= s.price_per_kg %>/kg</td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+var SLABS = [];
+<% for(var si = 0; si < slabs.length; si++) { %>
+SLABS.push({
+  id: "<%= slabs[si].id %>",
+  label: "<%= slabs[si].label %>",
+  min_km: <%= slabs[si].min_km %>,
+  max_km: <%= slabs[si].max_km ? slabs[si].max_km : 999999 %>,
+  price_per_kg: <%= slabs[si].price_per_kg %>,
+  base_charge: <%= slabs[si].base_charge %>
+});
+<% } %>
+
+var selectedItems = {};
+
+function getSlabForDistance(km) {
+  for (var i = 0; i < SLABS.length; i++) {
+    if (km >= SLABS[i].min_km && km <= SLABS[i].max_km) {
+      return SLABS[i];
+    }
+  }
+  return null;
+}
+
+function toggleCategory(header) {
+  var items = header.nextElementSibling;
+  var arrow = header.querySelector('.cat-arrow');
+  if (items.style.display === 'none') {
+    items.style.display = 'block';
+    arrow.style.transform = 'rotate(0deg)';
+  } else {
+    items.style.display = 'none';
+    arrow.style.transform = 'rotate(180deg)';
+  }
+}
+
+function toggleItem(checkbox) {
+  var id = checkbox.dataset.id;
+  var qtyDiv = document.getElementById('qty-' + id);
+  if (checkbox.checked) {
+    selectedItems[id] = {
+      id: id,
+      name: checkbox.dataset.name,
+      weight: parseFloat(checkbox.dataset.weight),
+      price: parseFloat(checkbox.dataset.price),
+      qty: 1
+    };
+    qtyDiv.style.display = 'flex';
+  } else {
+    delete selectedItems[id];
+    qtyDiv.style.display = 'none';
+    document.getElementById('subtotal-' + id).textContent = '';
+    document.getElementById('qty-val-' + id).textContent = '1';
+  }
+  calculateEstimate();
+}
+
+function changeQty(id, delta) {
+  if (!selectedItems[id]) return;
+  var newQty = selectedItems[id].qty + delta;
+  if (newQty < 1) newQty = 1;
+  selectedItems[id].qty = newQty;
+  document.getElementById('qty-val-' + id).textContent = newQty;
+  calculateEstimate();
+}
+
+function calculateEstimate() {
+  var km = parseInt(document.getElementById('distanceKm').value) || 0;
+  var slab = km > 0 ? getSlabForDistance(km) : null;
+
+  if (slab) {
+    document.getElementById('slabInfo').style.display = 'flex';
+    document.getElementById('slabLabel').textContent = slab.label + ' - Base: Rs.' + slab.base_charge + ' + Rs.' + slab.price_per_kg + '/kg';
+    document.getElementById('slabLabelSmall').textContent = slab.label;
+  } else {
+    document.getElementById('slabInfo').style.display = 'none';
+  }
+
+  var itemKeys = Object.keys(selectedItems);
+  if (!slab || itemKeys.length === 0) {
+    document.getElementById('priceEmpty').style.display = 'block';
+    document.getElementById('priceBreakdown').style.display = 'none';
+    document.getElementById('summaryActions').style.display = 'none';
+    return;
+  }
+
+  var totalWeight = 0;
+  var totalItemsCharge = 0;
+  var itemsHtml = '';
+
+  for (var i = 0; i < itemKeys.length; i++) {
+    var item = selectedItems[itemKeys[i]];
+    var itemWeight = item.weight * item.qty;
+    var itemCharge = item.price * item.qty;
+    totalWeight += itemWeight;
+    totalItemsCharge += itemCharge;
+    document.getElementById('subtotal-' + item.id).textContent = 'Rs.' + itemCharge;
+    itemsHtml += '<div class="item-summary-row"><span>' + item.name + ' x' + item.qty + '</span><span>' + itemWeight + 'kg / Rs.' + itemCharge + '</span></div>';
+  }
+
+  var weightCharge = Math.round(totalWeight * slab.price_per_kg);
+  var baseCharge = Math.round(slab.base_charge);
+  var grandTotal = baseCharge + weightCharge + Math.round(totalItemsCharge);
+
+  document.getElementById('itemsList').innerHTML = itemsHtml;
+  document.getElementById('totalWeight').textContent = totalWeight.toFixed(1) + ' kg';
+  document.getElementById('baseCharge').textContent = 'Rs.' + baseCharge;
+  document.getElementById('weightCharge').textContent = 'Rs.' + weightCharge;
+  document.getElementById('itemsCharge').textContent = 'Rs.' + Math.round(totalItemsCharge);
+  document.getElementById('grandTotal').textContent = 'Rs.' + grandTotal;
+
+  document.getElementById('priceEmpty').style.display = 'none';
+  document.getElementById('priceBreakdown').style.display = 'block';
+  document.getElementById('summaryActions').style.display = 'flex';
+
+  var from = document.getElementById('fromCity').value;
+  var to = document.getElementById('toCity').value;
+  document.getElementById('bookNowBtn').href = '/request-quote?from_city=' + encodeURIComponent(from) + '&to_city=' + encodeURIComponent(to) + '&estimate=' + grandTotal;
+}
+
+function resetEstimate() {
+  var checkboxes = document.querySelectorAll('.item-checkbox:checked');
+  for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].checked = false;
+    var id = checkboxes[i].dataset.id;
+    document.getElementById('qty-' + id).style.display = 'none';
+    document.getElementById('subtotal-' + id).textContent = '';
+    document.getElementById('qty-val-' + id).textContent = '1';
+  }
+  selectedItems = {};
+  document.getElementById('distanceKm').value = '';
+  document.getElementById('fromCity').value = '';
+  document.getElementById('toCity').value = '';
+  calculateEstimate();
+}
+</script>
+
+<%- include('../partials/footer') %>

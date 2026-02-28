@@ -1,0 +1,67 @@
+<%- include('../partials/header') %>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>My Requests</h1>
+    <nav class="breadcrumb-nav"><a href="/">Home</a> <i class="fas fa-chevron-right"></i> My Requests</nav>
+  </div>
+</section>
+
+<section class="section user-dashboard">
+  <div class="container">
+    <div class="user-layout">
+      <aside class="user-sidebar">
+        <div class="user-sidebar-profile">
+          <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+          <h4><%= currentUser.name %></h4>
+          <small><%= currentUser.email %></small>
+        </div>
+        <nav class="user-nav">
+          <a href="/user/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <a href="/request-quote"><i class="fas fa-plus-circle"></i> New Booking</a>
+          <a href="/user/my-requests" class="active"><i class="fas fa-list-alt"></i> My Requests</a>
+          <a href="/user/my-account"><i class="fas fa-user"></i> My Account</a>
+          <a href="/user/change-password"><i class="fas fa-key"></i> Change Password</a>
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+      </aside>
+      <div class="user-content">
+        <div class="content-header">
+          <h2>My Booking Requests</h2>
+          <a href="/request-quote" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New Request</a>
+        </div>
+        <% if (bookings.length === 0) { %>
+        <div class="empty-state">
+          <i class="fas fa-clipboard-list"></i>
+          <p>You haven't made any booking requests yet.</p>
+          <a href="/request-quote" class="btn btn-primary">Request a Quote</a>
+        </div>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr><th>#</th><th>Booking ID</th><th>Service</th><th>From</th><th>To</th><th>Move Date</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <% bookings.forEach(function(b, i) { %>
+              <tr>
+                <td><%= i+1 %></td>
+                <td><strong><%= b.booking_number %></strong></td>
+                <td><%= b.service_name || 'General' %></td>
+                <td><%= b.from_city %></td>
+                <td><%= b.to_city %></td>
+                <td><%= new Date(b.move_date).toLocaleDateString('en-IN') %></td>
+                <td><span class="status-badge status-<%= b.status %>"><%= b.status %></span></td>
+                <td><a href="/user/booking/<%= b.id %>" class="btn btn-sm btn-outline">Details</a></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Our Services</h1>
+    <nav class="breadcrumb-nav">
+      <a href="/">Home</a> <i class="fas fa-chevron-right"></i> Services
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">What We Offer</span>
+      <h2>Complete Moving Solutions</h2>
+      <p>From small apartments to corporate offices, international moves to vehicle transport — we do it all with care.</p>
+    </div>
+    <div class="services-list">
+      <% services.forEach(function(service, index) { %>
+      <div class="service-detail-card <%= index % 2 === 1 ? 'reverse' : '' %>">
+        <div class="service-detail-img">
+          <% if (service.image) { %>
+            <img src="/images/services/<%= service.image %>" alt="<%= service.name %>">
+          <% } else { %>
+            <!-- SERVICE IMAGE PLACEHOLDER -->
+            <!-- Upload image via Admin Panel → Services → Edit Service -->
+            <div class="service-img-placeholder large">
+              <i class="<%= service.icon || 'fas fa-box' %>"></i>
+              <span>Image goes here<br><small>Upload via Admin Panel</small></span>
+            </div>
+          <% } %>
+        </div>
+        <div class="service-detail-content">
+          <div class="service-detail-icon"><i class="<%= service.icon || 'fas fa-box' %>"></i></div>
+          <h3><%= service.name %></h3>
+          <p><%= service.description %></p>
+          <% if (service.price_range) { %>
+          <div class="price-badge">
+            <i class="fas fa-tag"></i> Starting from: <strong><%= service.price_range %></strong>
+          </div>
+          <% } %>
+          <div style="display:flex;gap:10px;margin-top:10px">
+  
+  <a href="/request-quote?service=<%= service.id %>" class="btn btn-primary">
+    <i class="fas fa-clipboard-list"></i> Book Now
+  </a>
+</div>
+        </div>
+      </div>
+      <% }); %>
+
+      <% if (services.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-concierge-bell"></i>
+        <p>No services available at the moment. Check back soon!</p>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Can't find what you're looking for?</h2>
+      <p>Contact us and we'll create a custom moving plan just for you.</p>
+      <a href="/contact" class="btn btn-white btn-lg">
+        <i class="fas fa-envelope"></i> Contact Us
+      </a>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>
+
+

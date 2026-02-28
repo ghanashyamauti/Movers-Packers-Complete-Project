@@ -1,0 +1,40 @@
+<%- include('../partials/header') %>
+<section class="page-banner"><div class="container"><h1>My Account</h1></div></section>
+<section class="section user-dashboard">
+  <div class="container">
+    <div class="user-layout">
+      <aside class="user-sidebar">
+        <div class="user-sidebar-profile"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><h4><%= currentUser.name %></h4></div>
+        <nav class="user-nav">
+          <a href="/user/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <a href="/request-quote"><i class="fas fa-plus-circle"></i> New Booking</a>
+          <a href="/user/my-requests"><i class="fas fa-list-alt"></i> My Requests</a>
+          <a href="/user/my-account" class="active"><i class="fas fa-user"></i> My Account</a>
+          <a href="/user/change-password"><i class="fas fa-key"></i> Change Password</a>
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+      </aside>
+      <div class="user-content">
+        <div class="content-card">
+          <div class="card-header"><h3><i class="fas fa-user-edit"></i> Update Profile</h3></div>
+          <form action="/user/my-account" method="POST">
+            <div class="form-row">
+              <div class="form-group"><label>Full Name</label><input type="text" name="name" class="form-control" value="<%= user.name %>" required></div>
+              <div class="form-group"><label>Email</label><input type="email" class="form-control" value="<%= user.email %>" disabled></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control" value="<%= user.phone || '' %>"></div>
+              <div class="form-group"><label>City</label><input type="text" name="city" class="form-control" value="<%= user.city || '' %>"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>State</label><input type="text" name="state" class="form-control" value="<%= user.state || '' %>"></div>
+              <div class="form-group"><label>Address</label><input type="text" name="address" class="form-control" value="<%= user.address || '' %>"></div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

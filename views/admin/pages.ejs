@@ -1,0 +1,20 @@
+<%- include('../partials/admin-header') %>
+<div class="page-title"><h1><i class="fas fa-file-alt"></i> Manage Pages</h1></div>
+<div class="admin-table-card">
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead><tr><th>Page</th><th>Key</th><th>Last Updated</th><th>Action</th></tr></thead>
+      <tbody>
+        <% pages.forEach(function(p) { %>
+        <tr>
+          <td><strong><%= p.title || p.page_key %></strong></td>
+          <td><code><%= p.page_key %></code></td>
+          <td><%= new Date(p.updated_at).toLocaleDateString('en-IN') %></td>
+          <td><a href="/admin/pages/edit/<%= p.page_key %>" class="btn btn-xs btn-outline"><i class="fas fa-edit"></i> Edit</a></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../partials/admin-footer') %>

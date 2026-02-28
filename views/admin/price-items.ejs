@@ -1,0 +1,61 @@
+<%- include('../partials/admin-header') %>
+
+<div class="page-title">
+  <h1><i class="fas fa-tags"></i> Manage Price Items</h1>
+  <a href="/admin/price-items/add" class="btn btn-primary"><i class="fas fa-plus"></i> Add Item</a>
+</div>
+
+<div class="admin-table-card" style="margin-bottom:25px">
+  <div class="table-card-header">
+    <h3><i class="fas fa-route"></i> Distance Slabs</h3>
+    <a href="/admin/price-slabs" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> Edit Slabs</a>
+  </div>
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead><tr><th>Distance Range</th><th>Base Charge</th><th>Price Per KG</th><th>Status</th></tr></thead>
+      <tbody>
+        <% slabs.forEach(function(s) { %>
+        <tr>
+          <td><strong><%= s.label %></strong></td>
+          <td>₹<%= Number(s.base_charge).toLocaleString('en-IN') %></td>
+          <td>₹<%= s.price_per_kg %>/kg</td>
+          <td><span class="badge <%= s.is_active ? 'badge-success' : 'badge-danger' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<% const cats = [...new Set(items.map(i => i.category))]; %>
+<% cats.forEach(function(cat) { %>
+<div class="admin-table-card">
+  <div class="table-card-header">
+    <h3><i class="fas fa-box"></i> <%= cat %></h3>
+  </div>
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead><tr><th>#</th><th>Item Name</th><th>Weight (KG)</th><th>Handling Price</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <% items.filter(i => i.category === cat).forEach(function(item, idx) { %>
+        <tr>
+          <td><%= idx+1 %></td>
+          <td><strong><%= item.name %></strong></td>
+          <td><%= item.weight_kg %> kg</td>
+          <td>₹<%= Number(item.base_price).toLocaleString('en-IN') %></td>
+          <td><span class="badge <%= item.is_active ? 'badge-success' : 'badge-danger' %>"><%= item.is_active ? 'Active' : 'Off' %></span></td>
+          <td>
+            <a href="/admin/price-items/edit/<%= item.id %>" class="btn btn-xs btn-outline"><i class="fas fa-edit"></i> Edit</a>
+            <form action="/admin/price-items/delete/<%= item.id %>" method="POST" style="display:inline" onsubmit="return confirm('Delete this item?')">
+              <button type="submit" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<% }); %>
+
+<%- include('../partials/admin-footer') %>

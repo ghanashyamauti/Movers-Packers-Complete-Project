@@ -1,0 +1,33 @@
+<%- include('../partials/admin-header') %>
+<div class="page-title"><h1><i class="fas fa-users"></i> Registered Users</h1></div>
+<div class="admin-table-card">
+  <% if (users.length === 0) { %>
+  <div class="empty-state"><i class="fas fa-users"></i><p>No registered users yet</p></div>
+  <% } else { %>
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Bookings</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <% users.forEach(function(u, i) { %>
+        <tr>
+          <td><%= i+1 %></td>
+          <td><strong><%= u.name %></strong></td>
+          <td><%= u.email %></td>
+          <td><%= u.phone || '—' %></td>
+          <td><%= u.city || '—' %></td>
+          <td><span class="badge badge-info"><%= u.booking_count %></span></td>
+          <td><span class="badge <%= u.is_active ? 'badge-success' : 'badge-danger' %>"><%= u.is_active ? 'Active' : 'Disabled' %></span></td>
+          <td>
+            <a href="/admin/users/<%= u.id %>" class="btn btn-xs btn-outline"><i class="fas fa-eye"></i> View</a>
+            <form action="/admin/users/<%= u.id %>/toggle" method="POST" style="display:inline" onsubmit="return confirm('Toggle user status?')">
+              <button type="submit" class="btn btn-xs <%= u.is_active ? 'btn-danger' : 'btn-success' %>"><%= u.is_active ? 'Disable' : 'Enable' %></button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</div>
+<%- include('../partials/admin-footer') %>

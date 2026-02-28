@@ -1,0 +1,105 @@
+<%- include('../partials/header') %>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>My Dashboard</h1>
+    <nav class="breadcrumb-nav">
+      <a href="/">Home</a> <i class="fas fa-chevron-right"></i> Dashboard
+    </nav>
+  </div>
+</section>
+
+<section class="section user-dashboard">
+  <div class="container">
+    <div class="user-layout">
+      <!-- USER SIDEBAR -->
+      <aside class="user-sidebar">
+        <div class="user-sidebar-profile">
+          <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+          <h4><%= currentUser.name %></h4>
+          <small><%= currentUser.email %></small>
+        </div>
+        <nav class="user-nav">
+          <a href="/user/dashboard" class="<%= currentPath.includes('/dashboard') ? 'active' : '' %>"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <a href="/request-quote"><i class="fas fa-plus-circle"></i> New Booking</a>
+          <a href="/user/my-requests" class="<%= currentPath.includes('/my-requests') ? 'active' : '' %>"><i class="fas fa-list-alt"></i> My Requests</a>
+          <a href="/user/my-account" class="<%= currentPath.includes('/my-account') ? 'active' : '' %>"><i class="fas fa-user"></i> My Account</a>
+          <a href="/user/change-password" class="<%= currentPath.includes('/change-password') ? 'active' : '' %>"><i class="fas fa-key"></i> Change Password</a>
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+      </aside>
+
+      <!-- DASHBOARD CONTENT -->
+      <div class="user-content">
+        <h2>Welcome, <%= currentUser.name.split(' ')[0] %>! 👋</h2>
+
+        <!-- STATS -->
+        <div class="user-stats-grid">
+          <div class="user-stat-card stat-total">
+            <i class="fas fa-clipboard-list"></i>
+            <div><span><%= stats.total || 0 %></span><p>Total Requests</p></div>
+          </div>
+          <div class="user-stat-card stat-pending">
+            <i class="fas fa-hourglass-half"></i>
+            <div><span><%= stats.pending || 0 %></span><p>Pending</p></div>
+          </div>
+          <div class="user-stat-card stat-approved">
+            <i class="fas fa-check-circle"></i>
+            <div><span><%= stats.approved || 0 %></span><p>Approved</p></div>
+          </div>
+          <div class="user-stat-card stat-rejected">
+            <i class="fas fa-times-circle"></i>
+            <div><span><%= stats.rejected || 0 %></span><p>Rejected</p></div>
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <a href="/request-quote" class="btn btn-primary"><i class="fas fa-plus"></i> New Booking Request</a>
+          <a href="/user/my-requests" class="btn btn-outline">View All Requests</a>
+        </div>
+
+        <!-- RECENT BOOKINGS -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3><i class="fas fa-history"></i> Recent Bookings</h3>
+          </div>
+          <% if (bookings.length === 0) { %>
+          <div class="empty-state">
+            <i class="fas fa-clipboard"></i>
+            <p>No bookings yet. <a href="/request-quote">Request your first quote!</a></p>
+          </div>
+          <% } else { %>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Booking #</th>
+                  <th>Service</th>
+                  <th>From → To</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% bookings.forEach(function(b) { %>
+                <tr>
+                  <td><strong><%= b.booking_number %></strong></td>
+                  <td><%= b.service_name || 'General' %></td>
+                  <td><%= b.from_city %> → <%= b.to_city %></td>
+                  <td><%= new Date(b.move_date).toLocaleDateString('en-IN') %></td>
+                  <td><span class="status-badge status-<%= b.status %>"><%= b.status %></span></td>
+                  <td><a href="/user/booking/<%= b.id %>" class="btn btn-sm btn-outline">View</a></td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

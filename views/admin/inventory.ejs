@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventory & Pricing - Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<%- include('../partials/admin-header') %>
+
+
+      <div class="page-title">
+        <div>
+          <h1><i class="fas fa-boxes"></i> Inventory & Pricing</h1>
+          <p>Manage movable items, weights and distance pricing slabs</p>
+        </div>
+      </div>
+
+      <% if(success) { %><div class="flash flash-success"><i class="fas fa-check-circle"></i> <%= success %></div><br><% } %>
+      <% if(error) { %><div class="flash flash-error"><i class="fas fa-times-circle"></i> <%= error %></div><br><% } %>
+
+      <!-- DISTANCE SLABS -->
+      <div class="admin-table-card" style="margin-bottom:25px;">
+        <div class="table-card-header">
+          <h3><i class="fas fa-road"></i> Distance Pricing Slabs (₹ per kg)</h3>
+        </div>
+        <div class="table-responsive">
+<table class="admin-table" style="min-width:700px;width:100%;">            <thead><tr><th>Label</th><th>Min KM</th><th>Max KM</th><th>₹ per KG</th><th>Action</th></tr></thead>
+            <tbody>
+              <% slabs.forEach(slab => { %>
+              <tr>
+                <td><strong><%= slab.label %></strong></td>
+                <td><%= slab.min_km %></td>
+                <td><%= slab.max_km %></td>
+                <td><span style="color:#f6921e;font-weight:700;">₹<%= slab.price_per_kg %></span></td>
+                <td>
+                  <button onclick="editSlab(<%= slab.id %>,'<%= slab.label %>',<%= slab.min_km %>,<%= slab.max_km %>,<%= slab.price_per_kg %>)" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> Edit</button>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ITEMS TABLE -->
+      <div class="admin-table-card">
+        <div class="table-card-header">
+          <h3><i class="fas fa-list"></i> Inventory Items</h3>
+          <button onclick="document.getElementById('addItemModal').style.display='flex'" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Item</button>
+        </div>
+        <div class="table-responsive">
+<table class="admin-table" style="min-width:800px;width:100%;">            <thead><tr><th>Category</th><th>Item Name</th><th>Weight (kg)</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <% items.forEach(item => { %>
+              <tr>
+                <td><span class="badge badge-info"><%= item.cat_name %></span></td>
+                <td><strong><%= item.name %></strong></td>
+                <td><%= item.weight_kg %> kg</td>
+                <td><span class="badge <%= item.is_active ? 'badge-success' : 'badge-danger' %>"><%= item.is_active ? 'Active' : 'Inactive' %></span></td>
+                <td style="display:flex;gap:6px;">
+                  <button onclick="editItem(<%= item.id %>,'<%= item.name %>',<%= item.weight_kg %>,<%= item.category_id %>,'<%= item.is_active %>')" class="btn btn-xs btn-outline"><i class="fas fa-edit"></i></button>
+                  <form method="POST" action="/admin/inventory/item/delete" onsubmit="return confirm('Delete this item?')">
+                    <input type="hidden" name="id" value="<%= item.id %>">
+                    <button class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+<!-- Add Item Modal -->
+<div id="addItemModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:30px;width:420px;max-width:95%;">
+    <h3 style="margin-bottom:20px;color:#1e3a5f;">Add New Item</h3>
+    <form method="POST" action="/admin/inventory/item/add">
+      <div class="form-group">
+        <label>Category</label>
+        <select name="category_id" class="form-control" required>
+          <% categories.forEach(c => { %><option value="<%= c.id %>"><%= c.name %></option><% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Item Name</label>
+        <input type="text" name="name" class="form-control" placeholder="e.g. King Size Bed" required>
+      </div>
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" name="weight_kg" class="form-control" placeholder="e.g. 70" step="0.5" required>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="btn btn-primary">Add Item</button>
+        <button type="button" onclick="document.getElementById('addItemModal').style.display='none'" class="btn btn-outline">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div id="editItemModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:30px;width:420px;max-width:95%;">
+    <h3 style="margin-bottom:20px;color:#1e3a5f;">Edit Item</h3>
+    <form method="POST" action="/admin/inventory/item/edit">
+      <input type="hidden" name="id" id="editItemId">
+      <div class="form-group">
+        <label>Category</label>
+        <select name="category_id" id="editCatId" class="form-control">
+          <% categories.forEach(c => { %><option value="<%= c.id %>"><%= c.name %></option><% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Item Name</label>
+        <input type="text" name="name" id="editItemName" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" name="weight_kg" id="editItemWeight" class="form-control" step="0.5" required>
+      </div>
+      <div class="form-group">
+        <label class="toggle-label">
+          <input type="checkbox" name="is_active" id="editItemActive">
+          <span class="toggle-switch"></span> Active
+        </label>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" onclick="document.getElementById('editItemModal').style.display='none'" class="btn btn-outline">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Slab Modal -->
+<div id="editSlabModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:30px;width:420px;max-width:95%;">
+    <h3 style="margin-bottom:20px;color:#1e3a5f;">Edit Pricing Slab</h3>
+    <form method="POST" action="/admin/inventory/slab/edit">
+      <input type="hidden" name="id" id="editSlabId">
+      <div class="form-group"><label>Label</label><input type="text" name="label" id="editSlabLabel" class="form-control" required></div>
+      <div class="form-row">
+        <div class="form-group"><label>Min KM</label><input type="number" name="min_km" id="editSlabMin" class="form-control" required></div>
+        <div class="form-group"><label>Max KM</label><input type="number" name="max_km" id="editSlabMax" class="form-control" required></div>
+      </div>
+      <div class="form-group"><label>Price per KG (₹)</label><input type="number" name="price_per_kg" id="editSlabPrice" class="form-control" step="0.5" required></div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" onclick="document.getElementById('editSlabModal').style.display='none'" class="btn btn-outline">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function editItem(id, name, weight, catId, active) {
+  document.getElementById('editItemId').value = id;
+  document.getElementById('editItemName').value = name;
+  document.getElementById('editItemWeight').value = weight;
+  document.getElementById('editCatId').value = catId;
+  document.getElementById('editItemActive').checked = active === 'true';
+  document.getElementById('editItemModal').style.display = 'flex';
+}
+function editSlab(id, label, min, max, price) {
+  document.getElementById('editSlabId').value = id;
+  document.getElementById('editSlabLabel').value = label;
+  document.getElementById('editSlabMin').value = min;
+  document.getElementById('editSlabMax').value = max;
+  document.getElementById('editSlabPrice').value = price;
+  document.getElementById('editSlabModal').style.display = 'flex';
+}
+</script>
+</body>
+</html>

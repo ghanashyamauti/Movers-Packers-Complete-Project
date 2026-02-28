@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicles & Labour - Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<%- include('../partials/admin-header') %>
+
+<div class="page-title" style="justify-content:center;text-align:center;">        <div><h1><i class="fas fa-truck"></i> Vehicles & Labour Settings</h1>
+        <p>Manage vehicle types, pricing and labour rates</p></div>
+      </div>
+
+      <% if(success) { %><div class="flash flash-success"><i class="fas fa-check-circle"></i> <%= success %></div><br><% } %>
+      <% if(error) { %><div class="flash flash-error"><i class="fas fa-times-circle"></i> <%= error %></div><br><% } %>
+
+      <!-- LABOUR SETTINGS -->
+<div class="admin-form-card" style="margin-bottom:25px;padding:35px;">        <form method="POST" action="/admin/vehicles/settings/update">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+  <% settings.forEach(s => { %>
+  <div class="form-group" style="margin-bottom:0;">
+              <label><%= s.label %></label>
+              <input type="number" name="<%= s.setting_key %>" value="<%= s.setting_value %>" class="form-control" step="0.5" required>
+            </div>
+            <% }) %>
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+        </form>
+      </div>
+
+      <!-- VEHICLES TABLE -->
+<!-- VEHICLES TABLE -->
+<div class="admin-table-card">
+  <div class="table-card-header">
+    <h3><i class="fas fa-truck"></i> Vehicles</h3>
+    <button onclick="document.getElementById('addVehicleModal').style.display='flex'" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Vehicle</button>
+  </div>
+  <div class="table-responsive">
+  <table class="admin-table" style="min-width:900px;width:100%;">            <thead><tr><th>Photo</th><th>Name</th><th>Capacity</th><th>Base Fare</th><th>Per KM</th><th>Per KG</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <% vehicles.forEach(v => { %>
+              <tr>
+                <td>
+                  <% if(v.image) { %>
+                    <img src="/images/vehicles/<%= v.image %>" style="width:60px;height:40px;object-fit:contain;border-radius:6px;">
+                  <% } else { %>
+                    <div style="width:60px;height:40px;background:#f0f4f8;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#718096;"><i class="fas fa-truck"></i></div>
+                  <% } %>
+                </td>
+                <td><strong><%= v.name %></strong></td>
+                <td><%= v.capacity_kg %> kg</td>
+                <td>₹<%= v.base_fare %></td>
+                <td>₹<%= v.per_km_rate %>/km</td>
+                <td>₹<%= v.per_kg_rate %>/kg</td>
+                <td><span class="badge <%= v.is_active ? 'badge-success':'badge-danger' %>"><%= v.is_active?'Active':'Inactive' %></span></td>
+                <td style="display:flex;gap:6px;">
+                  <button onclick="editVehicle(<%= v.id %>,'<%= v.name %>',<%= v.capacity_kg %>,<%= v.base_fare %>,<%= v.per_km_rate %>,<%= v.per_kg_rate %>,'<%= v.image %>','<%= v.is_active %>',<%= v.sort_order %>)" class="btn btn-xs btn-outline"><i class="fas fa-edit"></i></button>
+                  <form method="POST" action="/admin/vehicles/delete" onsubmit="return confirm('Delete?')">
+                    <input type="hidden" name="id" value="<%= v.id %>">
+                    <button class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+   </main>
+
+<!-- Add Vehicle Modal -->
+<div id="addVehicleModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:30px;width:700px;max-width:95%;max-height:90vh;overflow-y:auto;">
+    <h3 style="margin-bottom:20px;color:#1e3a5f;">Add New Vehicle</h3>
+    <form method="POST" action="/admin/vehicles/add" enctype="multipart/form-data">
+      <div class="form-row">
+        <div class="form-group"><label>Vehicle Name</label><input type="text" name="name" class="form-control" placeholder="e.g. Mini Truck" required></div>
+        <div class="form-group"><label>Capacity (kg)</label><input type="number" name="capacity_kg" class="form-control" placeholder="e.g. 1000" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Base Fare (₹)</label><input type="number" name="base_fare" class="form-control" step="0.5" required></div>
+        <div class="form-group"><label>Per KM Rate (₹)</label><input type="number" name="per_km_rate" class="form-control" step="0.5" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Per KG Rate (₹)</label><input type="number" name="per_kg_rate" class="form-control" step="0.01" required></div>
+        <div class="form-group"><label>Sort Order</label><input type="number" name="sort_order" class="form-control" value="0"></div>
+      </div>
+      <div class="form-group"><label>Vehicle Photo</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="btn btn-primary">Add Vehicle</button>
+        <button type="button" onclick="document.getElementById('addVehicleModal').style.display='none'" class="btn btn-outline">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Vehicle Modal -->
+<div id="editVehicleModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:30px;width:500px;max-width:95%;max-height:90vh;overflow-y:auto;">
+    <h3 style="margin-bottom:20px;color:#1e3a5f;">Edit Vehicle</h3>
+    <form method="POST" action="/admin/vehicles/edit" enctype="multipart/form-data">
+      <input type="hidden" name="id" id="ev-id">
+      <input type="hidden" name="existing_image" id="ev-img">
+      <div class="form-row">
+        <div class="form-group"><label>Vehicle Name</label><input type="text" name="name" id="ev-name" class="form-control" required></div>
+        <div class="form-group"><label>Capacity (kg)</label><input type="number" name="capacity_kg" id="ev-cap" class="form-control" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Base Fare (₹)</label><input type="number" name="base_fare" id="ev-base" class="form-control" step="0.5" required></div>
+        <div class="form-group"><label>Per KM Rate (₹)</label><input type="number" name="per_km_rate" id="ev-km" class="form-control" step="0.5" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Per KG Rate (₹)</label><input type="number" name="per_kg_rate" id="ev-kg" class="form-control" step="0.01" required></div>
+        <div class="form-group"><label>Sort Order</label><input type="number" name="sort_order" id="ev-sort" class="form-control"></div>
+      </div>
+      <div class="form-group">
+        <label>Active</label>
+        <label class="toggle-label"><input type="checkbox" name="is_active" id="ev-active"><span class="toggle-switch"></span> Active</label>
+      </div>
+      <div class="form-group"><label>New Photo (leave empty to keep current)</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" onclick="document.getElementById('editVehicleModal').style.display='none'" class="btn btn-outline">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function editVehicle(id,name,cap,base,km,kg,img,active,sort) {
+  document.getElementById('ev-id').value=id;
+  document.getElementById('ev-name').value=name;
+  document.getElementById('ev-cap').value=cap;
+  document.getElementById('ev-base').value=base;
+  document.getElementById('ev-km').value=km;
+  document.getElementById('ev-kg').value=kg;
+  document.getElementById('ev-img').value=img;
+  document.getElementById('ev-sort').value=sort;
+  document.getElementById('ev-active').checked=active==='true';
+  document.getElementById('editVehicleModal').style.display='flex';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<%- include('../partials/header') %>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="/images/hero/hero-bg.jpg" alt="Moving Services">
+  </div>
+<div class="hero-overlay" style="background:rgba(26,58,92,0.0);"></div>  <div class="container hero-content">
+    <div class="hero-text">
+      <span class="hero-badge"><i class="fas fa-shield-alt"></i> Trusted & Insured Movers</span>
+      <h1>Move Smarter,<br>Live Better</h1>
+      <p>Professional packing and moving services with 5+ years of experience. We handle your belongings like our own — safely, swiftly, and affordably.</p>
+      <div class="hero-buttons">
+        <a href="/estimate" class="btn btn-outline btn-lg" style="color:#fff;border-color:#fff;">
+  <i class="fas fa-calculator"></i> Estimate Cost
+</a>
+        <a href="/request-quote" class="btn btn-primary btn-lg">
+          <i class="fas fa-clipboard-list"></i> Get Free Quote
+        </a>
+        <a href="/services" class="btn btn-outline btn-lg" style="color:#fff;border-color:#fff;">
+  <i class="fas fa-arrow-right"></i> Our Services
+</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span>5+</span><small>Years Experience</small></div>
+        <div class="stat"><span>50K+</span><small>Happy Clients</small></div>
+        <div class="stat"><span>100%</span><small>Safe Delivery</small></div>
+        <div class="stat"><span>24/7</span><small>Support</small></div>
+      </div>
+    </div>
+    <div class="hero-form-card">
+      <h3><i class="fas fa-calculator"></i> Quick Quote</h3>
+      <form action="/request-quote" method="GET">
+        <div class="form-group">
+          <label><i class="fas fa-map-marker-alt"></i> Moving From</label>
+          <input type="text" name="from" placeholder="City, State" class="form-control">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-location-arrow"></i> Moving To</label>
+          <input type="text" name="to" placeholder="City, State" class="form-control">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-calendar"></i> Move Date</label>
+          <input type="date" name="date" class="form-control" min="<%= new Date().toISOString().split('T')[0] %>">
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-search"></i> Check Availability
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="section why-us">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Why Kalyani Packers & Movers</span>
+      <h2>The Smart Choice for <br>Your Next Move</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <!-- ICON IMAGE PLACEHOLDER: You can replace icons with images -->
+        <div class="feature-icon" style="background:#fff3cd;color:#f39c12">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Fully Insured</h3>
+        <p>All your belongings are covered with comprehensive insurance during transit for complete peace of mind.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#d4edda;color:#27ae60">
+          <i class="fas fa-user-check"></i>
+        </div>
+        <h3>Verified Staff</h3>
+        <p>Our team is background-verified, trained, and professional. Your safety is our top priority.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#cce5ff;color:#2980b9">
+          <i class="fas fa-headset"></i>
+        </div>
+        <h3>24/7 Support</h3>
+        <p>Round-the-clock customer support to answer your questions and track your shipment anytime.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#f8d7da;color:#e74c3c">
+          <i class="fas fa-rupee-sign"></i>
+        </div>
+        <h3>Best Pricing</h3>
+        <p>Transparent, competitive pricing with no hidden charges. Get the best value for your money.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e2d9f3;color:#8e44ad">
+          <i class="fas fa-truck"></i>
+        </div>
+        <h3>Pan-India Network</h3>
+        <p>Operating in 500+ cities across India with a robust fleet and experienced local teams.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#d0f0f0;color:#16a085">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <h3>Quality Packing</h3>
+        <p>Premium packing materials and proven techniques to protect even the most fragile items.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES PREVIEW -->
+<section class="section services-preview">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">What We Offer</span>
+      <h2>Our Moving Services</h2>
+      <p>From local household moves to international relocations, we have the expertise and equipment to handle it all.</p>
+    </div>
+    <div class="services-grid">
+      <% services.forEach(function(service, index) { %>
+      <div class="service-card" data-delay="<%= index * 100 %>">
+        <% if (service.image) { %>
+          <div class="service-img">
+            <img src="/images/services/<%= service.image %>" alt="<%= service.name %>">
+          </div>
+        <% } else { %>
+          <!-- SERVICE IMAGE PLACEHOLDER: Upload service images to /public/images/services/ and add filename in admin panel -->
+          <div class="service-img service-img-placeholder">
+            <i class="<%= service.icon || 'fas fa-box' %>"></i>
+          </div>
+        <% } %>
+        <div class="service-body">
+          <div class="service-icon"><i class="<%= service.icon || 'fas fa-box' %>"></i></div>
+          <h3><%= service.name %></h3>
+          <p><%= service.short_description %></p>
+          <% if (service.price_range) { %>
+            <div class="service-price"><i class="fas fa-tag"></i> <%= service.price_range %></div>
+          <% } %>
+          <a href="/request-quote" class="btn btn-sm btn-outline-primary">Book Now</a>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <div class="text-center mt-4">
+      <a href="/services" class="btn btn-primary btn-lg">View All Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-it-works">
+  <div class="container">
+    <div class="section-header light">
+      <span class="section-badge">Simple Process</span>
+      <h2>How It Works</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-number">01</div>
+        <div class="step-icon"><i class="fas fa-clipboard-list"></i></div>
+        <h3>Request a Quote</h3>
+        <p>Fill in your moving details and get an instant free quote tailored to your needs.</p>
+      </div>
+      <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+      <div class="step">
+        <div class="step-number">02</div>
+        <div class="step-icon"><i class="fas fa-phone-alt"></i></div>
+        <h3>Confirm Booking</h3>
+        <p>Our team calls you to confirm details, finalize the plan, and schedule your move.</p>
+      </div>
+      <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+      <div class="step">
+        <div class="step-number">03</div>
+        <div class="step-icon"><i class="fas fa-box-open"></i></div>
+        <h3>Pack & Move</h3>
+        <p>Experienced movers arrive on time, pack everything professionally and load carefully.</p>
+      </div>
+      <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+      <div class="step">
+        <div class="step-number">04</div>
+        <div class="step-icon"><i class="fas fa-home"></i></div>
+        <h3>Safe Delivery</h3>
+        <p>Your belongings are delivered safely and unpacked at your new home. Done!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testimonials">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Customer Love</span>
+      <h2>What Our Clients Say</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"SwiftMove made our relocation from Mumbai to Bangalore completely stress-free. The team was professional and all our items arrived safely. Highly recommended!"</p>
+        <div class="testimonial-author">
+          <!-- CLIENT PHOTO PLACEHOLDER: Add client photos to /public/images/team/ -->
+          <div class="author-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <strong>Rahul Sharma</strong>
+            <small>Mumbai → Bangalore</small>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"Our office moved without a single day of business disruption. The planning and execution were perfect. SwiftMove truly understands corporate requirements."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <strong>Priya Mehta</strong>
+            <small>Office Relocation, Pune</small>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"Excellent service! My car was transported safely from Delhi to Chennai without a scratch. The tracking system was amazing. Will use again!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <strong>Amit Patel</strong>
+            <small>Vehicle Transport, Delhi</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner" style="background-image:url('/images/hero/cta-bg.jpg');background-size:cover;background-position:center;position:relative;">
+  <div style="position:absolute;inset:0;background:rgba(246,146,30,0.0);"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="cta-content">
+      <h2>Ready to Move? Let's Get Started!</h2>
+      <p>Get your free quote today — no commitment, no hidden fees.</p>
+      <div class="cta-buttons">
+        <a href="/request-quote" class="btn btn-white btn-lg">
+          <i class="fas fa-clipboard-list"></i> Request Free Quote
+        </a>
+        <a href="tel:+919876543210" class="btn btn-outline-white btn-lg">
+          <i class="fas fa-phone"></i> Call Now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

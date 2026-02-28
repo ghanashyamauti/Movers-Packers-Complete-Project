@@ -1,0 +1,196 @@
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <!-- LOGO PLACEHOLDER for footer -->
+          <span class="logo-icon"><i class="fas fa-truck-moving"></i></span>
+          <span class="logo-text">Kalyani<span>Packers & Movers</span></span>
+        </div>
+        <p>Your trusted partner for safe, reliable, and affordable moving solutions across India and beyond.</p>
+        <div class="social-links">
+          <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="/services"><i class="fas fa-chevron-right"></i> Services</a></li>
+          <li><a href="/about"><i class="fas fa-chevron-right"></i> About Us</a></li>
+          <li><a href="/contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+          <li><a href="/request-quote"><i class="fas fa-chevron-right"></i> Request Quote</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Our Services</h4>
+        <ul>
+          <li><a href="/services"><i class="fas fa-chevron-right"></i> Home Relocation</a></li>
+          <li><a href="/services"><i class="fas fa-chevron-right"></i> Office Moving</a></li>
+          <li><a href="/services"><i class="fas fa-chevron-right"></i> Vehicle Transport</a></li>
+          <li><a href="/services"><i class="fas fa-chevron-right"></i> Warehouse Storage</a></li>
+          <li><a href="/services"><i class="fas fa-chevron-right"></i> International Moving</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact Info</h4>
+        <ul class="contact-info">
+          <li><i class="fas fa-map-marker-alt"></i> Bhagwant Complex, Near BJS College, Wagholi,<br>Pune, Maharashtra - 412207</li>
+          <li><i class="fas fa-phone"></i> <a href="tel:+918975021310">+91 89750 32310</a></li>
+          <li><i class="fas fa-envelope"></i> <a href="mailto:kalyani@gmail.com">kalyani@gmail.com</a></li>
+          <li><i class="fas fa-clock"></i> Mon–Sun: 8:00 AM – 8:00 PM</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <p>&copy; <%= new Date().getFullYear() %> Kalyani Packers & Movers. All rights reserved.</p>
+      <p>Designed with <i class="fas fa-heart" style="color:#e74c3c"></i> for happy relocations</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+
+<!-- AI CHAT WIDGET -->
+<div id="chat-widget" style="position:fixed;bottom:24px;right:24px;z-index:9999;font-family:'DM Sans',sans-serif;">
+
+  <!-- Chat Button -->
+  <button id="chat-toggle" onclick="toggleChat()" style="width:60px;height:60px;border-radius:50%;background:#f6921e;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(246,146,30,0.4);display:flex;align-items:center;justify-content:center;transition:all 0.3s;">
+    <i class="fas fa-comment-dots" style="color:#fff;font-size:1.5rem;" id="chat-icon"></i>
+  </button>
+
+  <!-- Chat Box -->
+  <div id="chat-box" style="display:none;position:absolute;bottom:75px;right:0;width:340px;background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.15);overflow:hidden;flex-direction:column;">
+
+    <!-- Header -->
+    <div style="background:#1e3a5f;padding:16px 20px;display:flex;align-items:center;gap:12px;">
+      <div style="width:40px;height:40px;background:#f6921e;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-truck-moving" style="color:#fff;font-size:1rem;"></i>
+      </div>
+      <div>
+        <div style="color:#fff;font-weight:700;font-size:0.95rem;">Kalyani Packers & Movers Assistant</div>
+        <div style="color:rgba(255,255,255,0.6);font-size:0.75rem;">● Online • Replies instantly</div>
+      </div>
+      <button onclick="toggleChat()" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;font-size:1.2rem;">×</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-messages" style="height:320px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#f8fafc;">
+      <div class="bot-msg" style="background:#fff;border-radius:12px 12px 12px 0;padding:12px 14px;font-size:0.85rem;color:#2d3748;box-shadow:0 1px 4px rgba(0,0,0,0.08);max-width:85%;line-height:1.5;">
+        👋 Hi! I'm the  Kalyani Packers & Movers assistant. I can help you with pricing, services, booking and moving tips. How can I help you?
+      </div>
+    </div>
+
+    <!-- Quick Replies -->
+    <div id="quick-replies" style="padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #e2e8f0;background:#fff;">
+      <button onclick="sendQuick('What are your rates?')" style="padding:5px 10px;border-radius:20px;border:1.5px solid #f6921e;background:#fff;color:#f6921e;font-size:0.75rem;font-weight:600;cursor:pointer;">Rates</button>
+      <button onclick="sendQuick('What vehicles do you have?')" style="padding:5px 10px;border-radius:20px;border:1.5px solid #f6921e;background:#fff;color:#f6921e;font-size:0.75rem;font-weight:600;cursor:pointer;">Vehicles</button>
+      <button onclick="sendQuick('How to book?')" style="padding:5px 10px;border-radius:20px;border:1.5px solid #f6921e;background:#fff;color:#f6921e;font-size:0.75rem;font-weight:600;cursor:pointer;">Book Now</button>
+      <button onclick="sendQuick('Contact details')" style="padding:5px 10px;border-radius:20px;border:1.5px solid #f6921e;background:#fff;color:#f6921e;font-size:0.75rem;font-weight:600;cursor:pointer;">Contact</button>
+    </div>
+
+    <!-- Input -->
+    <div style="padding:12px;border-top:1px solid #e2e8f0;display:flex;gap:8px;background:#fff;">
+      <input type="text" id="chat-input" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendMessage()"
+        style="flex:1;padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.85rem;outline:none;font-family:inherit;">
+      <button onclick="sendMessage()" style="width:38px;height:38px;background:#f6921e;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-paper-plane" style="color:#fff;font-size:0.85rem;"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let chatHistory = [];
+  let chatOpen = false;
+
+  function toggleChat() {
+    chatOpen = !chatOpen;
+    const box = document.getElementById('chat-box');
+    const icon = document.getElementById('chat-icon');
+    box.style.display = chatOpen ? 'flex' : 'none';
+    box.style.flexDirection = 'column';
+    icon.className = chatOpen ? 'fas fa-times' : 'fas fa-comment-dots';
+    if (chatOpen) document.getElementById('chat-input').focus();
+  }
+
+  function sendQuick(text) {
+    document.getElementById('chat-input').value = text;
+    sendMessage();
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (!message) return;
+    input.value = '';
+
+    // Hide quick replies after first message
+    document.getElementById('quick-replies').style.display = 'none';
+
+    // Add user message
+    appendMessage(message, 'user');
+    chatHistory.push({ role: 'user', message });
+
+    // Show typing indicator
+    const typingId = showTyping();
+
+    try {
+      const res = await fetch('/chat/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory.slice(-6) })
+      });
+      const data = await res.json();
+      removeTyping(typingId);
+      const reply = data.reply || 'Sorry, please call us at +91 8975032310';
+      appendMessage(reply, 'bot');
+      chatHistory.push({ role: 'bot', message: reply });
+    } catch (err) {
+      removeTyping(typingId);
+      appendMessage('Sorry, something went wrong. Please call +91 8975032310', 'bot');
+    }
+  }
+
+  function appendMessage(text, sender) {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.style.cssText = sender === 'user'
+      ? 'background:#1e3a5f;color:#fff;border-radius:12px 12px 0 12px;padding:10px 14px;font-size:0.85rem;max-width:85%;align-self:flex-end;line-height:1.5;'
+      : 'background:#fff;color:#2d3748;border-radius:12px 12px 12px 0;padding:10px 14px;font-size:0.85rem;box-shadow:0 1px 4px rgba(0,0,0,0.08);max-width:85%;line-height:1.5;';
+    div.textContent = text;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function showTyping() {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    const id = 'typing-' + Date.now();
+    div.id = id;
+    div.style.cssText = 'background:#fff;border-radius:12px 12px 12px 0;padding:10px 14px;font-size:0.85rem;box-shadow:0 1px 4px rgba(0,0,0,0.08);max-width:85%;color:#718096;';
+    div.innerHTML = '<i class="fas fa-circle" style="font-size:0.4rem;animation:pulse 1s infinite;"></i> <i class="fas fa-circle" style="font-size:0.4rem;animation:pulse 1s infinite 0.2s;"></i> <i class="fas fa-circle" style="font-size:0.4rem;animation:pulse 1s infinite 0.4s;"></i>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return id;
+  }
+
+  function removeTyping(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+</script>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+</style>
+
+</body>
+</html>
+

@@ -1,0 +1,39 @@
+<%- include('../partials/admin-header') %>
+<div class="page-title"><h1><i class="fas fa-user"></i> User Details</h1><a href="/admin/users" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a></div>
+<div class="booking-detail-layout">
+  <div class="booking-detail-card">
+    <div class="detail-sections">
+      <div class="detail-section"><h4><i class="fas fa-user"></i> Profile</h4>
+        <p><strong>Name:</strong> <%= user.name %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <p><strong>Phone:</strong> <%= user.phone || 'N/A' %></p>
+        <p><strong>City:</strong> <%= user.city || 'N/A' %></p>
+        <p><strong>State:</strong> <%= user.state || 'N/A' %></p>
+        <p><strong>Joined:</strong> <%= new Date(user.created_at).toLocaleDateString('en-IN') %></p>
+        <p><strong>Status:</strong> <span class="badge <%= user.is_active ? 'badge-success' : 'badge-danger' %>"><%= user.is_active ? 'Active' : 'Disabled' %></span></p>
+      </div>
+    </div>
+    <div class="card-header mt-3"><h3><i class="fas fa-calendar-check"></i> Booking History (<%= bookings.length %>)</h3></div>
+    <% if (bookings.length === 0) { %>
+      <div class="empty-state"><i class="fas fa-calendar"></i><p>No bookings from this user</p></div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead><tr><th>Booking #</th><th>Service</th><th>From → To</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody>
+            <% bookings.forEach(function(b) { %>
+            <tr>
+              <td><%= b.booking_number %></td>
+              <td><%= b.service_name %></td>
+              <td><%= b.from_city %> → <%= b.to_city %></td>
+              <td><%= new Date(b.move_date).toLocaleDateString('en-IN') %></td>
+              <td><span class="status-badge status-<%= b.status %>"><%= b.status %></span></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+<%- include('../partials/admin-footer') %>

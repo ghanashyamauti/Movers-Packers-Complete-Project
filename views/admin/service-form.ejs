@@ -1,0 +1,63 @@
+<%- include('../partials/admin-header') %>
+
+<div class="page-title">
+  <h1><i class="fas fa-<%= service ? 'edit' : 'plus' %>"></i> <%= service ? 'Edit' : 'Add' %> Service</h1>
+</div>
+
+<div class="admin-form-card">
+  <form action="/admin/services/<%= service ? 'edit/' + service.id : 'add' %>" method="POST" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Service Name *</label>
+        <input type="text" name="name" class="form-control" value="<%= service ? service.name : '' %>" required>
+      </div>
+      <div class="form-group">
+        <label>Icon (FontAwesome class)</label>
+        <input type="text" name="icon" class="form-control" value="<%= service ? service.icon : 'fas fa-box' %>" placeholder="fas fa-home">
+        <small>Browse at <a href="https://fontawesome.com/icons" target="_blank">fontawesome.com</a></small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Short Description</label>
+      <input type="text" name="short_description" class="form-control" value="<%= service ? service.short_description : '' %>" placeholder="Brief one-line description" maxlength="200">
+    </div>
+    <div class="form-group">
+      <label>Full Description</label>
+      <textarea name="description" rows="6" class="form-control" placeholder="Detailed description of the service..."><%= service ? service.description : '' %></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Price Range</label>
+        <input type="text" name="price_range" class="form-control" value="<%= service ? service.price_range : '' %>" placeholder="e.g. ₹5,000 – ₹50,000">
+      </div>
+      <div class="form-group">
+        <label>Sort Order</label>
+        <input type="number" name="sort_order" class="form-control" value="<%= service ? service.sort_order : 0 %>" min="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Service Image</label>
+        <input type="file" name="image" class="form-control" accept="image/*">
+        <% if (service && service.image) { %>
+          <small>Current: <img src="/images/services/<%= service.image %>" style="width:80px;height:50px;object-fit:cover;border-radius:4px;margin-left:5px;vertical-align:middle"></small>
+        <% } else { %>
+          <small style="color:#888">Upload a photo for this service (JPG, PNG, max 5MB)</small>
+        <% } %>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:30px">
+        <label class="toggle-label">
+          <input type="checkbox" name="is_active" <%= (!service || service.is_active) ? 'checked' : '' %>>
+          <span class="toggle-switch"></span>
+          Active / Visible on website
+        </label>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a href="/admin/services" class="btn btn-outline">Cancel</a>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <%= service ? 'Save Changes' : 'Add Service' %></button>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/admin-footer') %>

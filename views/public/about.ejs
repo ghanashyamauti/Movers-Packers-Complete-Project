@@ -1,0 +1,111 @@
+<%- include('../partials/header') %>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>About Us</h1>
+    <nav class="breadcrumb-nav">
+      <a href="/">Home</a> <i class="fas fa-chevron-right"></i> About Us
+    </nav>
+  </div>
+</section>
+
+<section class="section about-section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-images">
+        <!-- ABOUT IMAGE PLACEHOLDER: Upload about-1.jpg to /public/images/about/ -->
+        <div class="about-img-main">
+  <img src="/images/about/about-1.jpg" alt="About Us" style="width:100%;height:400px;object-fit:cover;border-radius:12px;">
+</div>
+        <!-- ABOUT IMAGE PLACEHOLDER 2: Upload about-2.jpg to /public/images/about/ -->
+        <div class="about-img-secondary">
+  <img src="/images/about/about-2.jpg" alt="Team" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+</div>
+        <div class="experience-badge">
+          <span class="exp-num">5+</span>
+          <span class="exp-text">Years of Excellence</span>
+        </div>
+      </div>
+      <div class="about-content">
+        <span class="section-badge">Our Story</span>
+        <% if (page && page.content) { %>
+          <%- page.content %>
+        <% } else { %>
+          <h2>Welcome to Kalyani Packers & Movers</h2>
+          <p>With over 5 years of experience in the moving industry, Kalyani Packers & Movers has helped thousands of families and businesses relocate safely and efficiently across India and internationally.</p>
+          <h3>Our Mission</h3>
+          <p>To provide stress-free, reliable, and affordable moving solutions with utmost care and professionalism.</p>
+        <% } %>
+        <a href="/request-quote" class="btn btn-primary mt-3">Get a Free Quote</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM SECTION -->
+<section class="section team-section" style="background:#f9f9f9">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Our People</span>
+      <h2>Meet the Team</h2>
+      <p>Our dedicated team of professionals ensures every move is handled with care and precision.</p>
+    </div>
+    <div class="team-grid">
+      <!-- TEAM MEMBER PHOTOS: Upload photos to /public/images/team/ -->
+      <div class="team-card">
+        <div class="team-photo" style="width:200px;height:200px;border-radius:50%;overflow:hidden;margin:0 auto 16px;">
+  <img src="/images/team/team-1.jpg" alt="Kalyani Pimpale" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+</div>
+        <h4>Kalyani Pimpale</h4>
+        <p>Founder & CEO</p>
+        <div class="team-social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo" style="width:200px;height:200px;border-radius:50%;overflow:hidden;margin:0 auto 16px;">
+  <img src="/images/team/team-2.jpg" alt="Ghanashyam Auti" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+</div>
+        <h4>Ghanashyam Auti</h4>
+        <p>Operations Head</p>
+        <div class="team-social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo" style="width:200px;height:200px;border-radius:50%;overflow:hidden;margin:0 auto 16px;">
+  <img src="/images/team/team-3.jpg" alt="Sakshi Darekar" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+</div>
+        <h4>Sakshi Darekar</h4>
+        <p>Logistics Manager</p>
+        <div class="team-social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo" style="width:200px;height:200px;border-radius:50%;overflow:hidden;margin:0 auto 16px;">
+  <img src="/images/team/team-4.jpg" alt="Monika Mhaske" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+</div>
+        <h4>Monika Mhaske</h4>
+        <p>Customer Relations</p>
+        <div class="team-social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MILESTONES -->
+<section class="section milestones">
+  <div class="container">
+    <div class="milestones-grid">
+      <div class="milestone"><span>50,000+</span><p>Happy Clients</p></div>
+      <div class="milestone"><span>500+</span><p>Cities Covered</p></div>
+      <div class="milestone"><span>200+</span><p>Trained Staff</p></div>
+      <div class="milestone"><span>5+</span><p>Years Experience</p></div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,43 @@
+<%- include('../partials/admin-header') %>
+
+<div class="page-title">
+  <h1><i class="fas fa-envelope"></i> Contact Queries</h1>
+</div>
+
+<div class="filter-bar">
+  <a href="/admin/queries" class="btn btn-sm <%= filter==='all' ? 'btn-primary' : 'btn-outline' %>">All</a>
+  <a href="/admin/queries?filter=unread" class="btn btn-sm <%= filter==='unread' ? 'btn-primary' : 'btn-outline' %>">Unread</a>
+  <a href="/admin/queries?filter=read" class="btn btn-sm <%= filter==='read' ? 'btn-primary' : 'btn-outline' %>">Read</a>
+</div>
+
+<div class="admin-table-card">
+  <% if (queries.length === 0) { %>
+  <div class="empty-state"><i class="fas fa-inbox"></i><p>No queries found</p></div>
+  <% } else { %>
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <% queries.forEach(function(q, i) { %>
+        <tr class="<%= !q.is_read ? 'unread-row' : '' %>">
+          <td><%= i+1 %></td>
+          <td><strong><%= q.name %></strong></td>
+          <td><%= q.email %></td>
+          <td><%= (q.subject || 'No Subject').substring(0,40) %></td>
+          <td><%= new Date(q.created_at).toLocaleDateString('en-IN') %></td>
+          <td><span class="badge <%= q.is_read ? 'badge-success' : 'badge-warning' %>"><%= q.is_read ? 'Read' : 'Unread' %></span></td>
+          <td>
+            <a href="/admin/queries/<%= q.id %>" class="btn btn-xs btn-outline"><i class="fas fa-eye"></i> View</a>
+            <form action="/admin/queries/<%= q.id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this query?')">
+              <button type="submit" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</div>
+
+<%- include('../partials/admin-footer') %>

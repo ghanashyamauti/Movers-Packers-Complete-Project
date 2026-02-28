@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-wrapper">
+  <!-- SIDEBAR -->
+   
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <span class="logo-icon"><i class="fas fa-truck-moving"></i></span>
+      <span class="logo-text">Kalyani<span>Packers & Movers</span></span>
+      <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="<%= currentPath.includes('/admin/dashboard') ? 'active' : '' %>">
+        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+      </a>
+      <a href="/admin/services" class="<%= currentPath.includes('/admin/services') ? 'active' : '' %>">
+        <i class="fas fa-concierge-bell"></i><span>Services</span>
+      </a>
+      <a href="/admin/bookings" class="<%= currentPath.includes('/admin/bookings') ? 'active' : '' %>">
+        <i class="fas fa-calendar-check"></i><span>Bookings</span>
+      </a>
+      <a href="/admin/queries" class="<%= currentPath.includes('/admin/queries') ? 'active' : '' %>">
+        <i class="fas fa-envelope"></i><span>Contact Queries</span>
+      </a>
+      <a href="/admin/users" class="<%= currentPath.includes('/admin/users') ? 'active' : '' %>">
+        <i class="fas fa-users"></i><span>Registered Users</span>
+      </a>
+      <a href="/admin/pages" class="<%= currentPath.includes('/admin/pages') ? 'active' : '' %>">
+        <i class="fas fa-file-alt"></i><span>Pages</span>
+      </a>
+      <a href="/admin/vehicles" class="<%= currentPath === '/admin/vehicles' ? 'active' : '' %>">
+  <i class="fas fa-truck"></i> Vehicles & Labour
+</a>
+      <a href="/admin/search" class="<%= currentPath.includes('/admin/search') ? 'active' : '' %>">
+        <i class="fas fa-search"></i><span>Search</span>
+      </a>
+      <a href="/admin/inventory" class="<%= currentPath === '/admin/inventory' ? 'active' : '' %>">
+  <i class="fas fa-boxes"></i> Inventory & Pricing
+</a>
+      <a href="/admin/price-items" class="<%= currentPath.includes('/admin/price') ? 'active' : '' %>">
+  <i class="fas fa-tags"></i><span>Price Manager</span>
+</a>
+      <a href="/admin/reports" class="<%= currentPath.includes('/admin/reports') ? 'active' : '' %>">
+        <i class="fas fa-chart-bar"></i><span>Reports</span>
+      </a>
+      <hr class="nav-divider">
+      <a href="/admin/profile" class="<%= currentPath.includes('/admin/profile') ? 'active' : '' %>">
+        <i class="fas fa-user-cog"></i><span>My Profile</span>
+      </a>
+      <a href="/admin/change-password" class="<%= currentPath.includes('/admin/change-password') ? 'active' : '' %>">
+        <i class="fas fa-key"></i><span>Change Password</span>
+      </a>
+      <a href="/" target="_blank">
+        <i class="fas fa-external-link-alt"></i><span>View Website</span>
+      </a>
+      <a href="/admin/logout" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="admin-main">
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="topbar-right">
+        <% if (success_msg && success_msg.length > 0) { %>
+          <div class="flash flash-success"><i class="fas fa-check-circle"></i> <%= success_msg %> <button class="flash-close">&times;</button></div>
+        <% } %>
+        <% if (error_msg && error_msg.length > 0) { %>
+          <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> <%= error_msg %> <button class="flash-close">&times;</button></div>
+        <% } %>
+        <div class="admin-user-badge">
+          <i class="fas fa-user-shield"></i>
+          <span><%= currentAdmin ? currentAdmin.name : 'Admin' %></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="admin-content">

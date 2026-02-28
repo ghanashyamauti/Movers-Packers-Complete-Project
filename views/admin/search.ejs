@@ -1,0 +1,39 @@
+<%- include('../partials/admin-header') %>
+<div class="page-title"><h1><i class="fas fa-search"></i> Search Bookings</h1></div>
+<div class="admin-form-card">
+  <form action="/admin/search" method="GET">
+    <div class="search-bar-row">
+      <input type="text" name="q" class="form-control" placeholder="Search by name, phone, email, or booking number..." value="<%= q %>" autofocus>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+    </div>
+  </form>
+</div>
+<% if (q) { %>
+<div class="admin-table-card">
+  <div class="table-card-header"><h3>Results for "<%= q %>" (<%= results.length %> found)</h3></div>
+  <% if (results.length === 0) { %>
+  <div class="empty-state"><i class="fas fa-search"></i><p>No bookings found matching your search.</p></div>
+  <% } else { %>
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead><tr><th>Booking #</th><th>Name</th><th>Phone</th><th>Email</th><th>From → To</th><th>Move Date</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <% results.forEach(function(b) { %>
+        <tr>
+          <td><strong><%= b.booking_number %></strong></td>
+          <td><%= b.guest_name %></td>
+          <td><%= b.guest_phone %></td>
+          <td><%= b.guest_email %></td>
+          <td><%= b.from_city %> → <%= b.to_city %></td>
+          <td><%= new Date(b.move_date).toLocaleDateString('en-IN') %></td>
+          <td><span class="status-badge status-<%= b.status %>"><%= b.status %></span></td>
+          <td><a href="/admin/bookings/<%= b.id %>" class="btn btn-xs btn-outline">View</a></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</div>
+<% } %>
+<%- include('../partials/admin-footer') %>

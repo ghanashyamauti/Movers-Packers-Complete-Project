@@ -1,0 +1,57 @@
+<%- include('../partials/admin-header') %>
+
+<div class="page-title">
+  <h1><i class="fas fa-<%= item ? 'edit' : 'plus' %>"></i> <%= item ? 'Edit' : 'Add' %> Price Item</h1>
+  <a href="/admin/price-items" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="admin-form-card" style="max-width:600px">
+  <form action="/admin/price-items/<%= item ? 'edit/' + item.id : 'add' %>" method="POST">
+    <div class="form-group">
+      <label>Category *</label>
+      <select name="category" class="form-control" required>
+        <option value="">-- Select Category --</option>
+        <% ['Furniture','Appliances','Electronics','Kitchen','Boxes & Misc','Other'].forEach(function(cat) { %>
+        <option value="<%= cat %>" <%= item && item.category === cat ? 'selected' : '' %>><%= cat %></option>
+        <% }); %>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Item Name *</label>
+      <input type="text" name="name" class="form-control" value="<%= item ? item.name : '' %>" placeholder="e.g. Double Bed" required>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Weight (KG) *</label>
+        <input type="number" name="weight_kg" class="form-control" value="<%= item ? item.weight_kg : '' %>" placeholder="e.g. 70" min="0" step="0.5" required>
+        <small>Approximate weight of this item</small>
+      </div>
+      <div class="form-group">
+        <label>Base Handling Price (₹) *</label>
+        <input type="number" name="base_price" class="form-control" value="<%= item ? item.base_price : '' %>" placeholder="e.g. 600" min="0" required>
+        <small>Packing/handling charge for this item</small>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Sort Order</label>
+        <input type="number" name="sort_order" class="form-control" value="<%= item ? item.sort_order : 0 %>" min="0">
+      </div>
+      <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:18px">
+        <label class="toggle-label">
+          <input type="checkbox" name="is_active" <%= (!item || item.is_active) ? 'checked' : '' %>>
+          <span class="toggle-switch"></span>
+          Active (show in estimator)
+        </label>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a href="/admin/price-items" class="btn btn-outline">Cancel</a>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save"></i> <%= item ? 'Save Changes' : 'Add Item' %>
+      </button>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/admin-footer') %>

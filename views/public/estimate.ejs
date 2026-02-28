@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .estimate-page { padding: 60px 0; background: #f0f4f8; min-height: 80vh; }
+    .est-tabs { display: flex; gap: 0; margin-bottom: 30px; background: #fff; border-radius: 12px; padding: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); max-width: 420px; }
+    .est-tab { flex: 1; padding: 12px 20px; border-radius: 8px; border: none; background: transparent; font-weight: 700; font-size: 0.95rem; cursor: pointer; color: #718096; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .est-tab.active { background: #1e3a5f; color: #fff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .estimate-wrapper { display: grid; grid-template-columns: 1fr 380px; gap: 30px; align-items: flex-start; }
+    .estimate-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 30px; margin-bottom: 20px; }
+    .estimate-card h2 { color: #1e3a5f; margin-bottom: 6px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+    .estimate-card h2 i { color: #f6921e; }
+    .estimate-card p.sub { color: #718096; font-size: 0.875rem; margin-bottom: 22px; }
+    .field-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+    .field-row .fg { flex: 1; min-width: 140px; }
+    .fg label { display: block; font-weight: 600; font-size: 0.85rem; color: #2d3748; margin-bottom: 6px; }
+    .fg input, .fg select { width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; color: #2d3748; }
+    .fg input:focus, .fg select:focus { outline: none; border-color: #f6921e; box-shadow: 0 0 0 3px rgba(246,146,30,0.12); }
+
+    /* Vehicle cards */
+    .vehicles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .vehicle-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+    .vehicle-card:hover { border-color: #1e3a5f; }
+    .vehicle-card.selected { border-color: #f6921e; background: #fffbf5; }
+    .vehicle-card.overloaded { border-color: #e74c3c; background: #fff5f5; opacity: 0.7; cursor: not-allowed; }
+    .vehicle-card.suggested { border-color: #27ae60; background: #f0fff4; }
+    .vehicle-icon { font-size: 2rem; margin-bottom: 8px; }
+    .vehicle-img { width: 60px; height: 45px; object-fit: contain; margin: 0 auto 8px; display: block; }
+    .vehicle-name { font-weight: 700; font-size: 0.85rem; color: #1e3a5f; margin-bottom: 4px; }
+    .vehicle-capacity { font-size: 0.75rem; color: #718096; }
+    .vehicle-rate { font-size: 0.75rem; color: #f6921e; font-weight: 600; margin-top: 4px; }
+    .overload-badge { position: absolute; top: 6px; right: 6px; background: #e74c3c; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+    .suggest-badge { position: absolute; top: 6px; right: 6px; background: #27ae60; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+
+    /* Items selector */
+    .category-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .cat-tab { padding: 6px 14px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: #fff; color: #718096; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .cat-tab.active { background: #1e3a5f; color: #fff; border-color: #1e3a5f; }
+    .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .item-card { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; }
+    .item-card.selected { border-color: #f6921e; background: #fffbf5; }
+    .item-name { font-weight: 600; font-size: 0.82rem; color: #2d3748; }
+    .item-weight { font-size: 0.75rem; color: #718096; margin-top: 2px; }
+    .item-qty { display: flex; align-items: center; gap: 5px; }
+    .qty-btn { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; color: #1e3a5f; font-weight: 700; }
+    .qty-btn:hover { background: #f6921e; color: #fff; border-color: #f6921e; }
+    .qty-num { font-weight: 700; color: #1e3a5f; min-width: 14px; text-align: center; font-size: 0.85rem; }
+    .cat-section { display: none; }
+    .cat-section.active { display: block; }
+    .cat-title { font-size: 0.78rem; font-weight: 700; color: #f6921e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+
+    /* Result panel */
+    .result-panel { position: sticky; top: 80px; }
+    .result-card { background: #1e3a5f; border-radius: 16px; padding: 26px; color: #fff; }
+    .result-card h3 { color: #fff; margin-bottom: 18px; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+    .result-card h3 i { color: #f6921e; }
+    .result-empty { text-align: center; padding: 20px 0; color: rgba(255,255,255,0.4); font-size: 0.875rem; }
+    .result-empty i { font-size: 2.5rem; display: block; margin-bottom: 10px; opacity: 0.2; }
+    .r-section { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+    .r-section-title { font-size: 0.75rem; font-weight: 700; color: #f6921e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .r-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 7px; color: rgba(255,255,255,0.8); }
+    .r-row:last-child { margin-bottom: 0; }
+    .r-total { display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; color: #f6921e; padding: 14px; background: rgba(246,146,30,0.15); border-radius: 10px; margin-bottom: 12px; }
+    .disclaimer { font-size: 0.75rem; color: rgba(255,255,255,0.55); text-align: center; margin-bottom: 14px; line-height: 1.5; }
+    .disclaimer i { color: #f6921e; }
+    .btn-calc { width: 100%; padding: 12px; border-radius: 10px; background: #f6921e; color: #fff; font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; transition: background 0.2s; }
+    .btn-calc:hover { background: #ffa840; }
+    .btn-book { width: 100%; padding: 12px; border-radius: 10px; background: #fff; color: #1e3a5f; font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: all 0.2s; }
+    .btn-book:hover { background: #e8f0fe; }
+    .weight-bar { background: rgba(255,255,255,0.1); border-radius: 20px; height: 6px; margin-top: 6px; overflow: hidden; }
+    .weight-bar-fill { height: 100%; border-radius: 20px; background: #f6921e; transition: width 0.4s ease; }
+    .error-box { background: rgba(231,76,60,0.2); border: 1px solid rgba(231,76,60,0.4); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #ff8a80; margin-bottom: 12px; display: none; }
+
+    /* Slabs ref card */
+    .slab-ref { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 20px; margin-top: 16px; }
+    .slab-ref h4 { color: #1e3a5f; font-size: 0.9rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .slab-ref h4 i { color: #f6921e; }
+    .slab-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.82rem; }
+    .slab-row:last-child { border: none; }
+
+    @media(max-width:900px) { .estimate-wrapper { grid-template-columns: 1fr; } .result-panel { position: static; } .vehicles-grid { grid-template-columns: repeat(2,1fr); } .items-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <div class="estimate-page">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:30px;">
+        <span class="section-badge">Free Tool</span>
+        <h2 style="color:#1e3a5f;margin:8px 0 6px;">Estimate Your Moving Cost</h2>
+        <p style="color:#718096;">Get an instant estimate for your move</p>
+      </div>
+
+      <!-- TABS -->
+      <div class="est-tabs">
+        <button class="est-tab active" onclick="switchTab('vehicle', this)">
+          <i class="fas fa-truck"></i> Vehicle Estimate
+        </button>
+        <button class="est-tab" onclick="switchTab('material', this)">
+          <i class="fas fa-boxes"></i> Material Estimate
+        </button>
+      </div>
+
+      <!-- ===================== VEHICLE TAB ===================== -->
+      <div id="tab-vehicle" class="tab-content active">
+        <div class="estimate-wrapper">
+          <div>
+            <div class="estimate-card">
+              <h2><i class="fas fa-truck"></i> Vehicle Based Estimate</h2>
+              <p class="sub">Select vehicle type, enter distance and weight to get instant pricing</p>
+
+              <div class="field-row">
+                <div class="fg">
+                  <label>From Location</label>
+                  <input type="text" id="v-from" placeholder="e.g. Pune">
+                </div>
+                <div class="fg">
+                  <label>To Location</label>
+                  <input type="text" id="v-to" placeholder="e.g. Mumbai">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="fg">
+                  <label>Distance (KM) <span style="color:#e74c3c;">*</span></label>
+                  <input type="number" id="v-distance" placeholder="e.g. 150" min="1" oninput="updateVehicleCards()">
+                </div>
+                <div class="fg">
+                  <label>Total Weight (KG) <span style="color:#e74c3c;">*</span></label>
+                  <input type="number" id="v-weight" placeholder="e.g. 200" min="1" oninput="updateVehicleCards()">
+                </div>
+              </div>
+
+              <p style="font-weight:700;color:#1e3a5f;margin-bottom:12px;font-size:0.9rem;">Select Vehicle:</p>
+              <div class="vehicles-grid">
+                <% vehicles.forEach(v => { %>
+                <div class="vehicle-card" id="vcard-<%= v.id %>" onclick="selectVehicle(<%= v.id %>, <%= v.capacity_kg %>)">
+                  <% if(v.image) { %>
+                    <img src="/images/vehicles/<%= v.image %>" class="vehicle-img" alt="<%= v.name %>">
+                  <% } else { %>
+                    <div class="vehicle-icon">
+                      <% if(v.name.includes('2-Wheeler')) { %><i class="fas fa-motorcycle"></i>
+                      <% } else if(v.name.includes('3-Wheeler')) { %><i class="fas fa-truck-pickup"></i>
+                      <% } else if(v.name.includes('Tata')) { %><i class="fas fa-shuttle-van"></i>
+                      <% } else if(v.name.includes('Pickup')) { %><i class="fas fa-truck-pickup"></i>
+                      <% } else { %><i class="fas fa-truck"></i><% } %>
+                    </div>
+                  <% } %>
+                  <div class="vehicle-name"><%= v.name %></div>
+                  <div class="vehicle-capacity">Up to <%= v.capacity_kg %> kg</div>
+                  <div class="vehicle-rate">₹<%= v.base_fare %> base + ₹<%= v.per_km_rate %>/km</div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vehicle Result Panel -->
+          <div class="result-panel">
+            <div class="result-card">
+              <h3><i class="fas fa-receipt"></i> Price Breakdown</h3>
+              <div id="v-empty" class="result-empty">
+                <i class="fas fa-truck"></i>
+                Select vehicle, enter distance & weight
+              </div>
+              <div id="v-error" class="error-box"></div>
+              <div id="v-result" style="display:none;">
+                <div class="r-section">
+                  <div class="r-section-title"><i class="fas fa-truck"></i> Vehicle Charges</div>
+                  <div class="r-row"><span>Base Fare</span><span id="vr-base">₹0</span></div>
+                  <div class="r-row"><span>Distance Charge</span><span id="vr-dist">₹0</span></div>
+                  <div class="r-row"><span>Weight Charge</span><span id="vr-wt">₹0</span></div>
+                  <div class="r-row" style="font-weight:700;color:#fff;border-top:1px solid rgba(255,255,255,0.15);padding-top:8px;margin-top:4px;">
+                    <span>Vehicle Subtotal</span><span id="vr-vtotal">₹0</span>
+                  </div>
+                </div>
+                <div class="r-section">
+                  <div class="r-section-title"><i class="fas fa-hard-hat"></i> Labour Charges</div>
+                  <div class="r-row"><span>No. of Labourers</span><span id="vr-lcount">0</span></div>
+                  <div class="r-row"><span>Rate per Labourer</span><span id="vr-lrate">₹0</span></div>
+                  <div class="r-row" style="font-weight:700;color:#fff;">
+                    <span>Labour Subtotal</span><span id="vr-ltotal">₹0</span>
+                  </div>
+                </div>
+                <div class="r-total">
+                  <span>Grand Total</span>
+                  <span id="vr-grand">₹0</span>
+                </div>
+                <div class="disclaimer"><i class="fas fa-info-circle"></i> Estimated price. Final amount confirmed after inspection.</div>
+                <a href="/request-quote" class="btn-book"><i class="fas fa-clipboard-list"></i> Book Now</a>
+              </div>
+            </div>
+
+            <div class="slab-ref">
+              <h4><i class="fas fa-info-circle"></i> Vehicle Rates</h4>
+              <% vehicles.forEach(v => { %>
+              <div class="slab-row">
+                <span style="color:#2d3748;font-weight:600;"><%= v.name %></span>
+                <span style="color:#f6921e;font-weight:700;">₹<%= v.base_fare %> + ₹<%= v.per_km_rate %>/km</span>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MATERIAL TAB ===================== -->
+      <div id="tab-material" class="tab-content">
+        <div class="estimate-wrapper">
+          <div>
+            <div class="estimate-card">
+              <h2><i class="fas fa-route"></i> Enter Distance</h2>
+              <p class="sub">Enter approximate distance between your locations</p>
+              <div class="field-row">
+                <div class="fg">
+                  <label>From Location</label>
+                  <input type="text" id="m-from" placeholder="e.g. Pune">
+                </div>
+                <div class="fg">
+                  <label>To Location</label>
+                  <input type="text" id="m-to" placeholder="e.g. Mumbai">
+                </div>
+                <div class="fg" style="max-width:140px;">
+                  <label>Distance (KM) <span style="color:#e74c3c;">*</span></label>
+                  <input type="number" id="m-distance" placeholder="e.g. 150" min="1">
+                </div>
+              </div>
+            </div>
+
+            <div class="estimate-card">
+              <h2><i class="fas fa-boxes"></i> Select Your Items</h2>
+              <p class="sub">Choose items and quantity — weight calculated automatically</p>
+              <div class="category-tabs">
+                <% categories.forEach((cat, i) => { %>
+                <button class="cat-tab <%= i===0?'active':'' %>" onclick="showCat(<%= cat.id %>, this)">
+                  <i class="fas <%= cat.icon %>"></i> <%= cat.name %>
+                </button>
+                <% }) %>
+              </div>
+              <% categories.forEach((cat, i) => { %>
+              <div class="cat-section <%= i===0?'active':'' %>" id="cat-<%= cat.id %>">
+                <div class="cat-title"><i class="fas <%= cat.icon %>"></i> <%= cat.name %></div>
+                <div class="items-grid">
+                  <% items.filter(it => it.category_id == cat.id).forEach(item => { %>
+                  <div class="item-card" id="card-<%= item.id %>">
+                    <div>
+                      <div class="item-name"><%= item.name %></div>
+                      <div class="item-weight"><i class="fas fa-weight-hanging" style="color:#f6921e;font-size:0.65rem;"></i> <%= item.weight_kg %> kg</div>
+                    </div>
+                    <div class="item-qty">
+                      <button class="qty-btn" onclick="changeQty(<%= item.id %>, -1, '<%= item.name %>', <%= item.weight_kg %>)">−</button>
+                      <span class="qty-num" id="qty-<%= item.id %>">0</span>
+                      <button class="qty-btn" onclick="changeQty(<%= item.id %>, 1, '<%= item.name %>', <%= item.weight_kg %>)">+</button>
+                    </div>
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+
+          <!-- Material Result Panel -->
+          <div class="result-panel">
+            <div class="result-card">
+              <h3><i class="fas fa-calculator"></i> Cost Estimate</h3>
+              <div id="m-empty" class="result-empty">
+                <i class="fas fa-box-open"></i>
+                Add items and enter distance
+              </div>
+              <div id="m-error" class="error-box"></div>
+              <div id="m-result" style="display:none;">
+                <div class="r-section">
+                  <div class="r-section-title">Selected Items</div>
+                  <div id="m-itemlist"></div>
+                  <div class="r-row" style="font-weight:700;color:#fff;border-top:1px solid rgba(255,255,255,0.15);padding-top:8px;margin-top:4px;">
+                    <span>Total Weight</span><span id="m-totalwt">0 kg</span>
+                  </div>
+                </div>
+                <div class="r-section">
+                  <div class="r-section-title"><i class="fas fa-box"></i> Material Charges</div>
+                  <div class="r-row"><span>Base Moving Cost</span><span id="mr-base">₹0</span></div>
+                  <div class="r-row"><span>Distance Charge</span><span id="mr-dist">₹0</span></div>
+                  <div class="r-row"><span>Packing (10%)</span><span id="mr-pack">₹0</span></div>
+                  <div class="r-row"><span>Handling (5%)</span><span id="mr-handle">₹0</span></div>
+                  <div class="r-row" style="font-weight:700;color:#fff;border-top:1px solid rgba(255,255,255,0.15);padding-top:8px;margin-top:4px;">
+                    <span>Material Subtotal</span><span id="mr-mtotal">₹0</span>
+                  </div>
+                </div>
+                <div class="r-section">
+                  <div class="r-section-title"><i class="fas fa-hard-hat"></i> Labour Charges</div>
+                  <div class="r-row"><span>No. of Labourers</span><span id="mr-lcount">0</span></div>
+                  <div class="r-row"><span>Rate per Labourer</span><span id="mr-lrate">₹0</span></div>
+                  <div class="r-row" style="font-weight:700;color:#fff;">
+                    <span>Labour Subtotal</span><span id="mr-ltotal">₹0</span>
+                  </div>
+                </div>
+                <div class="r-section">
+                  <div class="r-section-title"><i class="fas fa-truck"></i> Suggested Vehicle</div>
+                  <div class="r-row"><span id="mr-vname">-</span><span id="mr-vcost">₹0</span></div>
+                </div>
+                <button class="btn-calc" onclick="calculateMaterial()">
+                  <i class="fas fa-calculator"></i> Calculate Estimate
+                </button>
+                <div id="mr-grandwrap" style="display:none;">
+                  <div class="r-total">
+                    <span>Grand Total</span>
+                    <span id="mr-grand">₹0</span>
+                  </div>
+                  <div class="disclaimer"><i class="fas fa-info-circle"></i> Estimated price. Final amount confirmed after inspection.</div>
+                  <a href="/request-quote" class="btn-book"><i class="fas fa-clipboard-list"></i> Book Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    // ===== TAB SWITCH =====
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.est-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ===== VEHICLE TAB =====
+    let selectedVehicleId = null;
+    let selectedVehicleCapacity = 0;
+
+    const vehicles = <%- JSON.stringify(vehicles) %>;
+
+    function updateVehicleCards() {
+      const weight = parseFloat(document.getElementById('v-weight').value) || 0;
+      let suggestedId = null;
+      if (weight > 0) {
+        const fit = vehicles.filter(v => v.capacity_kg >= weight).sort((a,b) => a.capacity_kg - b.capacity_kg);
+        if (fit.length > 0) suggestedId = fit[0].id;
+      }
+      vehicles.forEach(v => {
+        const card = document.getElementById('vcard-' + v.id);
+        card.className = 'vehicle-card';
+        // Remove badges
+        const existing = card.querySelector('.overload-badge, .suggest-badge');
+        if (existing) existing.remove();
+
+        if (weight > 0 && v.capacity_kg < weight) {
+          card.classList.add('overloaded');
+          const badge = document.createElement('span');
+          badge.className = 'overload-badge';
+          badge.textContent = 'Overload';
+          card.appendChild(badge);
+        } else if (v.id === suggestedId) {
+          card.classList.add('suggested');
+          const badge = document.createElement('span');
+          badge.className = 'suggest-badge';
+          badge.textContent = '✓ Best Fit';
+          card.appendChild(badge);
+        }
+        if (selectedVehicleId === v.id) card.classList.add('selected');
+      });
+    }
+
+    function selectVehicle(id, capacity) {
+      const weight = parseFloat(document.getElementById('v-weight').value) || 0;
+      if (weight > 0 && capacity < weight) {
+        document.getElementById('v-error').style.display = 'block';
+        document.getElementById('v-error').textContent = `This vehicle can only carry ${capacity}kg. Your weight is ${weight}kg.`;
+        return;
+      }
+      document.getElementById('v-error').style.display = 'none';
+      selectedVehicleId = id;
+      selectedVehicleCapacity = capacity;
+      document.querySelectorAll('.vehicle-card').forEach(c => {
+        if (!c.classList.contains('overloaded')) c.classList.remove('selected');
+      });
+      const card = document.getElementById('vcard-' + id);
+      if (!card.classList.contains('overloaded')) {
+        card.classList.add('selected');
+        calculateVehicle();
+      }
+    }
+
+    async function calculateVehicle() {
+      if (!selectedVehicleId) return;
+      const distance = document.getElementById('v-distance').value;
+      const weight = document.getElementById('v-weight').value;
+      if (!distance || !weight) return;
+
+      const res = await fetch('/estimate/calculate-vehicle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vehicle_id: selectedVehicleId, distance_km: distance, weight_kg: weight })
+      });
+      const data = await res.json();
+
+      if (!data.success) {
+        document.getElementById('v-error').style.display = 'block';
+        document.getElementById('v-error').textContent = data.message;
+        document.getElementById('v-result').style.display = 'none';
+        document.getElementById('v-empty').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('v-error').style.display = 'none';
+      document.getElementById('v-empty').style.display = 'none';
+      document.getElementById('v-result').style.display = 'block';
+
+      document.getElementById('vr-base').textContent = '₹' + fmt(data.base_fare);
+      document.getElementById('vr-dist').textContent = '₹' + fmt(data.distance_charge);
+      document.getElementById('vr-wt').textContent = '₹' + fmt(data.weight_charge);
+      document.getElementById('vr-vtotal').textContent = '₹' + fmt(data.vehicle_total);
+      document.getElementById('vr-lcount').textContent = data.labour_count + ' persons';
+      document.getElementById('vr-lrate').textContent = '₹' + fmt(data.labour_rate) + '/person';
+      document.getElementById('vr-ltotal').textContent = '₹' + fmt(data.labour_charge);
+      document.getElementById('vr-grand').textContent = '₹' + fmt(data.grand_total);
+    }
+
+    // Auto recalculate when distance/weight changes
+    document.getElementById('v-distance').addEventListener('input', () => { updateVehicleCards(); if(selectedVehicleId) calculateVehicle(); });
+    document.getElementById('v-weight').addEventListener('input', () => { updateVehicleCards(); if(selectedVehicleId) calculateVehicle(); });
+
+    // ===== MATERIAL TAB =====
+    let selectedItems = {};
+
+    function showCat(catId, btn) {
+      document.querySelectorAll('.cat-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('cat-' + catId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function changeQty(id, delta, name, weight) {
+      const current = selectedItems[id] ? selectedItems[id].qty : 0;
+      const newQty = Math.max(0, current + delta);
+      if (newQty === 0) {
+        delete selectedItems[id];
+        document.getElementById('card-' + id).classList.remove('selected');
+      } else {
+        selectedItems[id] = { id, qty: newQty, name, weight };
+        document.getElementById('card-' + id).classList.add('selected');
+      }
+      document.getElementById('qty-' + id).textContent = newQty;
+      updateMaterialPanel();
+    }
+
+    function updateMaterialPanel() {
+      const keys = Object.keys(selectedItems);
+      if (keys.length === 0) {
+        document.getElementById('m-empty').style.display = 'block';
+        document.getElementById('m-result').style.display = 'none';
+        return;
+      }
+      document.getElementById('m-empty').style.display = 'none';
+      document.getElementById('m-result').style.display = 'block';
+      document.getElementById('mr-grandwrap').style.display = 'none';
+
+      let html = '';
+      let totalWeight = 0;
+      keys.forEach(k => {
+        const it = selectedItems[k];
+        const w = it.weight * it.qty;
+        totalWeight += w;
+        html += `<div class="r-row"><span>${it.name} ×${it.qty}</span><span>${w}kg</span></div>`;
+      });
+      document.getElementById('m-itemlist').innerHTML = html;
+      document.getElementById('m-totalwt').textContent = totalWeight.toFixed(1) + ' kg';
+    }
+
+    async function calculateMaterial() {
+      const distance = document.getElementById('m-distance').value;
+      if (!distance || distance <= 0) { alert('Please enter distance in KM!'); return; }
+      const keys = Object.keys(selectedItems);
+      if (keys.length === 0) { alert('Please select at least one item!'); return; }
+
+      const itemsArr = Object.values(selectedItems).map(i => ({ id: i.id, qty: i.qty }));
+      const res = await fetch('/estimate/calculate-material', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ distance_km: distance, items: JSON.stringify(itemsArr) })
+      });
+      const data = await res.json();
+      if (!data.success) { alert(data.message); return; }
+
+      document.getElementById('mr-base').textContent = '₹' + fmt(data.base_price);
+      document.getElementById('mr-dist').textContent = '₹' + fmt(data.distance_charge);
+      document.getElementById('mr-pack').textContent = '₹' + fmt(data.packing_charge);
+      document.getElementById('mr-handle').textContent = '₹' + fmt(data.handling_charge);
+      document.getElementById('mr-mtotal').textContent = '₹' + fmt(data.material_total);
+      document.getElementById('mr-lcount').textContent = data.labour_count + ' persons';
+      document.getElementById('mr-lrate').textContent = '₹' + fmt(data.labour_rate) + '/person';
+      document.getElementById('mr-ltotal').textContent = '₹' + fmt(data.labour_charge);
+      document.getElementById('mr-vname').textContent = data.suggested_vehicle || 'N/A';
+      document.getElementById('mr-vcost').textContent = '₹' + fmt(data.vehicle_cost);
+      document.getElementById('mr-grand').textContent = '₹' + fmt(data.grand_total);
+      document.getElementById('mr-grandwrap').style.display = 'block';
+    }
+
+    function fmt(n) { return parseInt(n).toLocaleString('en-IN'); }
+  </script>
+</body>
+</html>
